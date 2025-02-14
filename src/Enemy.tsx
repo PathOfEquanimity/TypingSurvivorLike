@@ -1,6 +1,14 @@
-export default function Enemy(){
-    return <p>"Hello world"</p>
-
+interface EnemyObject {
+  name: string
 }
 
+ function Enemy(){
+    return <p>"Hello world"</p>
+}
+
+
+export {
+    Enemy,
+    type EnemyObject
+} 
 
