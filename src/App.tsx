@@ -1,19 +1,49 @@
 import { useState, useEffect } from 'react'
 import './App.css'
-import {EnemyObject} from "./Enemy.tsx" 
-import {GameMap} from "./GameMap.tsx"
+import { EnemyObject } from "./EnemyObject.tsx"
+import { GameMap } from "./GameMap.tsx"
+import { PlayerObject } from './PlayerObject.tsx'
+
+const GRID_SIZE = 15;
+
+function getRandomEnemy(): EnemyObject {
+  const x = Math.floor(Math.random() * GRID_SIZE);
+  const y = Math.floor(Math.random() * GRID_SIZE);
+  const names = ["strong_one", "weak_one", "fast_one"];
+  const words = ["warrior", "mage", "thief"];
+  const movesTowardsPlayer = [true, false];
+
+  return {
+    name: names[Math.floor(Math.random() * names.length)],
+    status: "active",
+    x,
+    y,
+    word: words[Math.floor(Math.random() * words.length)],
+    moves_towards_player: movesTowardsPlayer[Math.floor(Math.random() * movesTowardsPlayer.length)]
+  };
+}
 
 function App() {
   const [enemies, setEnemies] = useState<EnemyObject[]>([])
+  const [player] = useState<PlayerObject>({
+    name: "Player1",
+    word: "example",
+    score: 0,
+    lifeBar: 100,
+    x: Math.floor(GRID_SIZE / 2),
+    y: Math.floor(GRID_SIZE / 2)
+  });
+
   useEffect(() => {
-    setEnemies([{name: "strong_one"}])
-  },[])
-  
+    const newEnemies = Array.from({ length: 3 }, () => getRandomEnemy());
+    setEnemies(newEnemies);
+  }, [])
+
   return (
     <>
-        <GameMap enemies={enemies} />
+      <GameMap gridSize={GRID_SIZE} enemies={enemies} player={player} />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
