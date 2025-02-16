@@ -6,16 +6,19 @@ import { PlayerObject } from './PlayerObject.tsx'
 
 const GRID_SIZE = 15;
 
+let enemyId = 0;
+
 function getRandomEnemy(): EnemyObject {
   const x = Math.floor(Math.random() * GRID_SIZE);
   const y = Math.floor(Math.random() * GRID_SIZE);
-  const names = ["strong_one", "weak_one", "fast_one"];
   const words = ["warrior", "mage", "thief"];
   const movesTowardsPlayer = [true, false];
 
+  enemyId += 1;
+
   return {
-    name: names[Math.floor(Math.random() * names.length)],
-    status: "active",
+    name: `enemy_${enemyId}`,
+    status: "inactive",
     x,
     y,
     word: words[Math.floor(Math.random() * words.length)],
