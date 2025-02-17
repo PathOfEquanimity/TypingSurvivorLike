@@ -68,13 +68,22 @@ button:focus-visible {
 }
 
 .node {
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   background-color: white;
   outline: 1px solid rgba(144, 175, 175, 0.75);
-  display: inline-grid;
 }
 
+.active {
+  outline: 1px solid blue; 
+}
+
+
 .grid {
+  /* display: grid; */
   text-align: center;
+}
+
+.row {
+    display: flex;
 }

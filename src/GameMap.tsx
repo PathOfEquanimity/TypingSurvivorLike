@@ -25,17 +25,19 @@ function Node({
   let { enemies, setEnemies, word, setWord } = useContext(EnemyContext);
   let style = {};
   if (status == Status.Hero) style = { backgroundColor: "green" };
+  else if (status == Status.Active && focus)  {
+    style = { backgroundColor: "red", outline: "5px solid blue"  };
+  }
   else if (status == Status.Active) {
     style = { backgroundColor: "red" };
   } else if (status == Status.Inactive) style = { backgroundColor: "yellow" };
-
   return (
-    <div className="node" style={style}>
+    <div key={name} className={"node"} style={style}>
       {status == Status.Active ? (
         <>
           <div className="toBeTyped">{_word}</div>
           <input
-            className="node"
+            // className="node"
             style={style}
             autoFocus={focus && status == Status.Active}
             value={focus && status == Status.Active ? word : ""}
@@ -104,7 +106,7 @@ function GameMap({ enemies }: { enemies: EnemyObject[] }) {
     <div className="grid">
       {grid.map((row, rowId) => {
         return (
-          <div key={rowId}>
+          <div key={rowId} className="row">
             {row.map((node) => {
               return node;
             })}
@@ -115,4 +117,4 @@ function GameMap({ enemies }: { enemies: EnemyObject[] }) {
   );
 }
 
-export { GameMap, PLAYER_POS };
+export { GameMap, PLAYER_POS, GRID_Y_LENGTH, GRID_X_LENGTH };

@@ -1,49 +1,28 @@
 import { useState, useEffect, createContext, useRef } from "react";
 import "./App.css";
 import { EnemyObject, Status, Pos } from "./Enemy.tsx";
-import { GameMap, PLAYER_POS } from "./GameMap.tsx";
+import { GameMap, PLAYER_POS, GRID_Y_LENGTH, GRID_X_LENGTH } from "./GameMap.tsx";
+import {words} from "./words1k.json"
+
 
 const MAX = 100 + 1; // account for exclusivity
 const MIN = 1;
 const ACTIVATION_THRESHOLD = 80;
 
-const ENEMIES: EnemyObject[] = [
-  {
-    name: "s1",
-    position: { y: 2, x: 2 },
-    word: "hello",
-    status: Status.Active,
-    focus: true,
-  },
-  {
-    name: "s2",
-    position: { y: 1, x: 1 },
-    word: "world",
-    status: Status.Inactive,
-    focus: false,
-  },
-  {
-    name: "s3",
-    position: { y: 3, x: 1 },
-    word: "stupid",
-    status: Status.Inactive,
-    focus: false,
-  },
-  {
-    name: "s4",
-    position: { y: 4, x: 1 },
-    word: "smart",
-    status: Status.Inactive,
-    focus: false,
-  },
-  {
-    name: "s5",
-    position: { y: 5, x: 1 },
-    word: "leisure",
-    status: Status.Inactive,
-    focus: false,
-  },
-];
+
+const constructEnemies = (n: number) => {
+    const scrambled = words.sort(() => Math.random() - 0.5)
+    const n_words = scrambled.slice(0, n)
+    return n_words.map((word, i) => {
+       return {
+            name: `s${i}`,
+            word: word,
+            position: {y: Math.floor(Math.random() * GRID_Y_LENGTH), x: Math.floor(Math.random() * GRID_X_LENGTH)},
+            status: Status.Inactive,
+            focus: false
+       } 
+    })
+}
 
 const EnemyContext = createContext({});
 
@@ -84,10 +63,11 @@ function nextStep(current: Pos, target: Pos, visited: Pos[]) {
 }
 
 function App() {
-  const [enemies, setEnemies] = useState<EnemyObject[]>(ENEMIES);
+  const [enemies, setEnemies] = useState<EnemyObject[]>(constructEnemies(10));
   const [word, setWord] = useState("");
   // Enemies interaction
   useEffect(() => {
+    constructEnemies(10)
     let timesRun = 0;
     const interval = setInterval(() => {
       if (timesRun === 10) {
