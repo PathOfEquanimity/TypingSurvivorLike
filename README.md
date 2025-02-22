@@ -3,12 +3,14 @@
 ## Possible features to add
 
 - [ ] Generate enemies randomly
-  - [ ] Generate words randomly
+  - [x] Generate words randomly
   - [ ] Generate position randomly
+    - [ ] Improve generation of enemies to be confined
   - [ ] Have random number of enemies
-- [ ] Beautify the experience
 - [ ] Have a win condition and a lose condition
-- [ ] Add levels?
+  - [x] lose condition
+  - [ ] win condition
+- [ ] Beautify the experience
 
 ## Known bugs
 

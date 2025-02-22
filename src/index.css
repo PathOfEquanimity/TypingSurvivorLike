@@ -66,18 +66,18 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
-
+/* With css I don't even know where to start, I kinda know what I need to achieve, but I'm clueless about how to actually achieve it beyond just googlin for styles and applying it. I don't know how to reason about css. Since it's usually consider to be something stupid, something copyable, mostly propagated by Moiz  */
 .node {
   width: 60px;
   height: 60px;
   background-color: white;
+    overflow: hidden;
   outline: 1px solid rgba(144, 175, 175, 0.75);
 }
 
 .active {
-  outline: 1px solid blue; 
+  outline: 1px solid blue;
 }
-
 
 .grid {
   /* display: grid; */
@@ -85,5 +85,24 @@ button:focus-visible {
 }
 
 .row {
-    display: flex;
+  display: flex;
+}
+.life-bar-container {
+  width: 200px;
+  height: 20px;
+  border: 1px solid black;
+  background-color: #eee;
+}
+
+.life-bar {
+  height: 100%;
+  background-color: red;
+  text-align: center;
+  line-height: 20px;
+  color: white;
+}
+
+.input {
+    display: inline;
+    width: 40%;
 }
