@@ -1,5 +1,6 @@
 import { useContext, useState } from "react";
 import { Status, EnemyObject, focusEnemy } from "./Enemy";
+import { useStore } from "./state";
 
 // NOTE: That's my biggest gripe with the current design 
 // Enemy state is updated in two different places, rather than being handled in one
@@ -27,11 +28,12 @@ function Node({
   focus: boolean;
   _typedWord: string;
 }) {
-  let { enemies, setEnemies, wordRef } = useContext(EnemyContext);
+  let { getEnemies, setEnemies } = useStore();
   const [typedWord, setTypedWord] = useState(_typedWord);
   let style = {};
-  if (status == Status.Hero) style = { backgroundColor: "green" };
-  else if (status == Status.Active && focus) {
+  if (status == Status.Hero){
+      style = { backgroundColor: "green" };
+  } else if (status == Status.Active && focus) {
     style = { backgroundColor: "red", outline: "5px solid blue" };
   } else if (status == Status.Active) {
     style = { backgroundColor: "red" };
@@ -49,8 +51,8 @@ function Node({
             value={typedWord}
             // value={focus && status == Status.Active ? typedWord : ""}
             onChange={(e) => {
-              wordRef.current = { name: name, word: _typedWord + e.target.value };
-              enemies.map((enemy: EnemyObject) => {
+              // wordRef.current = { name: name, word: _typedWord + e.target.value };
+              getEnemies().map((enemy: EnemyObject) => {
                 if (enemy.name == name) {
                   console.log(`I'm ${enemy.name} and this's my untyped word 
                               ${enemy.typedWord} and init word is ${_typedWord}
@@ -59,11 +61,11 @@ function Node({
                 }
               });
               setTypedWord(e.target.value);
-
+            // Typed correct word
               if (e.target.value == _word) {
                 setEnemies(
                   focusEnemy(
-                    enemies.map((enemy: EnemyObject) => {
+                    getEnemies().map((enemy: EnemyObject) => {
                       if (enemy.name == name) {
                         enemy.status = Status.Disabled;
                         enemy.focus = false;

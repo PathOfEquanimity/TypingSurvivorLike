@@ -14,9 +14,10 @@ import { GameMap } from "./GameMap.tsx";
 import LifeBar from "./LifeBar.tsx";
 import { useStore } from "./state.tsx";
 
-const MAX = 1000 + 1; // account for exclusivity
+const MAX = 10000 + 1; // account for exclusivity
 const MIN = 1;
-const ACTIVATION_THRESHOLD = 999;
+const ACTIVATION_THRESHOLD = 9900;
+const MOVEMENT_THRESHOLD = 1;
 const MAX_LIFE = 3;
 const DAMAGE = 1;
 
@@ -61,9 +62,11 @@ function App() {
     const {createEnemies, getEnemies, setEnemies} = useStore()
     const gameLogic = (delta: number) => {
         const enemies = getEnemies()
+        // throw Error;
           const visited: Pos[] = [];
           if(!enemies)
               return;
+          if (enemies.every(({status})=> status == Status.Disabled)) throw Error;
           let new_enemies = enemies!.map((enemy: EnemyObject) => {
             if (enemy.status == Status.Inactive) {
               // TODO: improve threshold activation
@@ -82,12 +85,16 @@ function App() {
                 // Currently position is based on a very small grid, and renders are not smooth at all, I don't want to have multiple boxes per node, to much effort. So one way to enable movement, is to increase position by delta passed. Another way to do this, is to say that 100 cycles will be equal to one move,
                 // The problem is, I don't have pixels, but rather I have 2d grid, with a very limited number of elements.
                 //
-              enemy.position = nextStep(enemy.position, PLAYER_POS, visited);
-              visited.push(enemy.position);
+                enemy.timeActivated += delta
+                if (enemy.timeActivated >= MOVEMENT_THRESHOLD){
+                      enemy.position = nextStep(enemy.position, PLAYER_POS, visited);
+                      visited.push(enemy.position);
+                      enemy.timeActivated = 0
+                }
             }
             return enemy;
           });
-          // new_enemies = focusEnemy(new_enemies);
+          new_enemies = focusEnemy(new_enemies);
           // Check if there's no active focus
           //
           setEnemies(new_enemies);
@@ -95,6 +102,7 @@ function App() {
   // Note: this is basically the 60 fps rendering, that I could've ahcieved with interval, but with more issues. So now, I need to adapt my previous game logic to this
   // Delta is amount of time passed since previous render, so I can update the position of my objets smooth like, because delta can change a bit, and if we don't account for it and always render at the same pace, there will be stuttering, a slow down in the movement 
   const lastTimeRef = useRef(0);
+  const totalDelta = useRef(0);
 
   useEffect(() => {
         if (!init){
@@ -108,18 +116,24 @@ function App() {
             if (!lastTimeRef.current) lastTimeRef.current = timestamp;
             const deltaTime = (timestamp - lastTimeRef.current) / 1000; // Convert to seconds
             lastTimeRef.current = timestamp;
-            gameLogic(deltaTime)
+            totalDelta.current += deltaTime
+
+            // gameLogic(deltaTime)
+            if (totalDelta.current >= 0.1){
+                gameLogic(totalDelta.current)
+                totalDelta.current = 0
+            }
             animationFrameId = requestAnimationFrame(gameLoop);
         };
 
         animationFrameId = requestAnimationFrame(gameLoop);
         return () => cancelAnimationFrame(animationFrameId); 
   })
-    return <h1>Enemy Position: {JSON.stringify(getEnemies())}</h1>;
-
+    // return <h1>Enemy Position: {JSON.stringify(getEnemies()?.map(({timeActivated})=> Math.round(timeActivated)))}</h1>;
+    //
   return (
     <>
-        <LifeBar life={life} maxLife={MAX_LIFE} />
+        {/* <LifeBar life={life} maxLife={MAX_LIFE} /> */}
         <GameMap />
     </>
   );

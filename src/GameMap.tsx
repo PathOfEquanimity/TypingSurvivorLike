@@ -2,10 +2,11 @@ import { EnemyObject, Pos, Status } from "./Enemy.tsx";
 import { Node } from "./Node.tsx";
 import { v4 as uuidv4 } from "uuid";
 import {GRID_Y_LENGTH, GRID_X_LENGTH, PLAYER_POS} from "./constants.tsx"
+import { useStore } from "./state.tsx";
 
 
 function GameMap() {
-  // const { enemies } = useStore()
+  const { getEnemies } = useStore()
   const grid = [];
   for (let y = 0; y < GRID_Y_LENGTH; y++) {
     const currentRow = [];
@@ -16,8 +17,8 @@ function GameMap() {
       let key = "h1";
       let typedWord = "";
       if (!(y == PLAYER_POS.y && x == PLAYER_POS.x)) {
-        const enemy = enemies.find(
-          (enemy) =>
+        const enemy = getEnemies()?.find(
+          (enemy: EnemyObject) =>
             enemy.position.y == y &&
             enemy.position.x == x &&
             enemy.status != Status.Disabled,
