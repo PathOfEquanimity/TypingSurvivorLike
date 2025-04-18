@@ -16,3 +16,7 @@
 
 - Focus only activates when enemy moves
 - Multiple enemies can't hit player during the same move
+
+## TODO:
+
+- [ ] Fix an issue of everything being one step behind

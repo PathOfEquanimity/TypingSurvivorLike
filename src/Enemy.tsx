@@ -1,4 +1,29 @@
-import { PLAYER_POS } from "./GameMap";
+import {
+  GRID_Y_LENGTH,
+  GRID_X_LENGTH,
+  PLAYER_POS
+} from "./constants.tsx";
+import { words } from "./words1k.json";
+
+export const constructEnemies = (n: number) => {
+  const scrambled = words.sort(() => Math.random() - 0.5);
+  const n_words = scrambled.slice(0, n);
+  console.log(n_words);
+  return n_words.map((word, i) => {
+    return {
+      name: `s${i}`,
+      word: word,
+      position: {
+        y: Math.floor(Math.random() * GRID_Y_LENGTH),
+        x: Math.floor(Math.random() * GRID_X_LENGTH),
+      },
+      status: Status.Inactive,
+      focus: false,
+      typedWord: "",
+      timeActivated: 0,
+    };
+  });
+};
 
 enum Status {
   Active,
@@ -18,7 +43,8 @@ interface EnemyObject {
   status: Status;
   word: string;
   focus: boolean;
-  typedWord?: string;
+  typedWord: string;
+  timeActivated: number;
 }
 
 const findDistance = (p1: Pos, p2: Pos) => {
@@ -58,6 +84,25 @@ const focusEnemy = (enemies: EnemyObject[]) => {
 
   return enemies;
 };
+
+// const constructEnemies = (n: number) => {
+//   const scrambled = words.sort(() => Math.random() - 0.5);
+//   const n_words = scrambled.slice(0, n);
+//   console.log(n_words);
+//   return n_words.map((word, i) => {
+//     return {
+//       name: `s${i}`,
+//       word: word,
+//       position: {
+//         y: Math.floor(Math.random() * GRID_Y_LENGTH),
+//         x: Math.floor(Math.random() * GRID_X_LENGTH),
+//       },
+//       status: Status.Inactive,
+//       focus: false,
+//       typedWord: "",
+//     };
+//   });
+// };
 
 function Enemy() {
   return <p>Hello world</p>;

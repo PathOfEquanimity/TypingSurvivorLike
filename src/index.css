@@ -71,7 +71,7 @@ button:focus-visible {
   width: 60px;
   height: 60px;
   background-color: white;
-    overflow: hidden;
+  overflow: hidden;
   outline: 1px solid rgba(144, 175, 175, 0.75);
 }
 
@@ -103,6 +103,6 @@ button:focus-visible {
 }
 
 .input {
-    display: inline;
-    width: 40%;
+  display: inline;
+  width: 40%;
 }

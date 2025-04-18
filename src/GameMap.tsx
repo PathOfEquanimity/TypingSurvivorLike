@@ -1,16 +1,11 @@
 import { EnemyObject, Pos, Status } from "./Enemy.tsx";
 import { Node } from "./Node.tsx";
 import { v4 as uuidv4 } from "uuid";
-
-const GRID_Y_LENGTH = 10;
-const GRID_X_LENGTH = 20;
-const PLAYER_POS: Pos = {
-  y: Math.floor(GRID_Y_LENGTH / 2),
-  x: Math.floor(GRID_X_LENGTH / 2),
-};
+import {GRID_Y_LENGTH, GRID_X_LENGTH, PLAYER_POS} from "./constants.tsx"
 
 
-function GameMap({ enemies }: { enemies: EnemyObject[] }) {
+function GameMap() {
+  // const { enemies } = useStore()
   const grid = [];
   for (let y = 0; y < GRID_Y_LENGTH; y++) {
     const currentRow = [];
@@ -19,6 +14,7 @@ function GameMap({ enemies }: { enemies: EnemyObject[] }) {
       let word = "Hero";
       let focus = false;
       let key = "h1";
+      let typedWord = "";
       if (!(y == PLAYER_POS.y && x == PLAYER_POS.x)) {
         const enemy = enemies.find(
           (enemy) =>
@@ -30,9 +26,11 @@ function GameMap({ enemies }: { enemies: EnemyObject[] }) {
         word = enemy === undefined ? "" : enemy.word;
         focus = enemy === undefined ? false : enemy.focus;
         key = enemy === undefined ? uuidv4() : enemy.name;
+        typedWord = enemy === undefined ? "" : enemy.typedWord;
       }
       currentRow.push(
         <Node
+          _typedWord={typedWord}
           name={key}
           status={status}
           _word={word}
@@ -59,4 +57,4 @@ function GameMap({ enemies }: { enemies: EnemyObject[] }) {
   );
 }
 
-export { GameMap, PLAYER_POS, GRID_Y_LENGTH, GRID_X_LENGTH };
+export { GameMap };
