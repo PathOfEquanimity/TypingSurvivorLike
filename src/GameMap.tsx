@@ -2,11 +2,11 @@ import { EnemyObject, Pos, Status } from "./Enemy.tsx";
 import { Node } from "./Node.tsx";
 import { v4 as uuidv4 } from "uuid";
 import {GRID_Y_LENGTH, GRID_X_LENGTH, PLAYER_POS} from "./constants.tsx"
-import { useStore } from "./state.tsx";
+import { useEnemyStore } from "./state.tsx";
 
 
 function GameMap() {
-  const { getEnemies } = useStore()
+  const { getEnemies } = useEnemyStore()
   const grid = [];
   for (let y = 0; y < GRID_Y_LENGTH; y++) {
     const currentRow = [];
@@ -29,6 +29,7 @@ function GameMap() {
         key = enemy === undefined ? uuidv4() : enemy.name;
         typedWord = enemy === undefined ? "" : enemy.typedWord;
       }
+
       currentRow.push(
         <Node
           _typedWord={typedWord}

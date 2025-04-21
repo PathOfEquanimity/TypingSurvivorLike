@@ -1,6 +1,6 @@
-import { useContext, useState } from "react";
+import { ChangeEvent, ChangeEventHandler, useContext, useEffect, useState } from "react";
 import { Status, EnemyObject, focusEnemy } from "./Enemy";
-import { useStore } from "./state";
+import { useEnemyStore, useWordStore } from "./state";
 
 // NOTE: That's my biggest gripe with the current design 
 // Enemy state is updated in two different places, rather than being handled in one
@@ -15,6 +15,8 @@ import { useStore } from "./state";
 // Responsibility of Node
 // 1. Update state of the enemy based on the word that's being typed
 
+// TODO: now I need to pass something back to the App, which can be done with a global like store
+
 function Node({
   name,
   status,
@@ -28,56 +30,56 @@ function Node({
   focus: boolean;
   _typedWord: string;
 }) {
-  let { getEnemies, setEnemies } = useStore();
+  let {getWords, setWords} = useWordStore()
+
   const [typedWord, setTypedWord] = useState(_typedWord);
+  const [wordObject, setWordObject] = useState<{letter: string, color: string}[]>()
+
+  useEffect(() => {
+    setTypedWord(_typedWord);
+    if (_word != undefined)
+        setWordObject(Array.from(_word).map((l, i) => {
+            let new_color = _typedWord[i] == l ? "green" : "black" 
+            return {letter: l, color: new_color}
+        }))
+  }, [_typedWord, _word]);
+
+  const onWordTyped = (e: ChangeEvent<HTMLInputElement>) => {
+      setTypedWord(e.target.value);
+      console.log(e.target.value)
+      const filtered = getWords().filter(({key}: {key: string}) => key != name)
+      setWords([...filtered, {key: name, typedWord: e.target.value}])
+      //update color
+      setWordObject(wordObject?.map((obj, i)=> {
+          let new_color = e.target.value[i] == obj.letter ? "green" : obj.color
+          return {letter: obj.letter, color: new_color}
+      }))
+  }
+
   let style = {};
   if (status == Status.Hero){
       style = { backgroundColor: "green" };
   } else if (status == Status.Active && focus) {
-    style = { backgroundColor: "red", outline: "5px solid blue" };
+    style = { backgroundColor: "", outline: "5px solid red" };
   } else if (status == Status.Active) {
-    style = { backgroundColor: "red" };
+    style = { backgroundColor: "" };
   } else if (status == Status.Inactive) style = { backgroundColor: "yellow" };
-    
+   // NOTE: What I want is to create a field, where I display my word, as a list of characters, and as I type, all that's being displayed is the change in colors. So as a first step I can turn word into a a list of nodes, that'll have letter + color. The second step is to create an invisible input button
   return (
     <div key={name} className={"node"} style={style}>
       {status == Status.Active ? (
         <>
-          <span className="typed">{_typedWord}</span>
+          {wordObject?.map(({letter, color}: {letter: string, color: string})=> {
+              return <span style={{color: color, fontSize: "22px", fontWeight: "bold"}}>{letter}</span>
+          })}
           <input
-            className="input"
+            className="invisibleInput"
             style={style}
             autoFocus={focus && status == Status.Active}
             value={typedWord}
-            // value={focus && status == Status.Active ? typedWord : ""}
-            onChange={(e) => {
-              // wordRef.current = { name: name, word: _typedWord + e.target.value };
-              getEnemies().map((enemy: EnemyObject) => {
-                if (enemy.name == name) {
-                  console.log(`I'm ${enemy.name} and this's my untyped word 
-                              ${enemy.typedWord} and init word is ${_typedWord}
-                                and the typedWord is ${typedWord}
-                              `);
-                }
-              });
-              setTypedWord(e.target.value);
-            // Typed correct word
-              if (e.target.value == _word) {
-                setEnemies(
-                  focusEnemy(
-                    getEnemies().map((enemy: EnemyObject) => {
-                      if (enemy.name == name) {
-                        enemy.status = Status.Disabled;
-                        enemy.focus = false;
-                      }
-                      return enemy;
-                    }),
-                  ),
-                );
-              }
-            }}
+            onChange={onWordTyped}
           />
-          <span className="toBeTyped">{_word}</span>
+          {/* <span className="toBeTyped">{_word}</span> */}
         </>
       ) : (
         ""

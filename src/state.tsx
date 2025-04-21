@@ -1,8 +1,13 @@
 import { EnemyObject, constructEnemies } from "./Enemy";
 import { create } from 'zustand'
 
+interface TypedWord {
+    key: string
+    typedWord: string
+}
 
-type Store = {
+
+type EnemyStore = {
   enemies?: EnemyObject[] 
   getEnemies: CallableFunction
   enemyFocused?: Boolean
@@ -10,7 +15,19 @@ type Store = {
   setEnemies: CallableFunction
 }
 
-const useStore = create<Store>()((set, get) => ({
+type StateStore = {
+  typedWords: TypedWord[]
+  getWords: CallableFunction
+  setWords: CallableFunction
+}
+
+const useWordStore = create<StateStore>()((set, get) => ({
+  typedWords: [],
+  getWords: () => get().typedWords,
+  setWords: (words: TypedWord[]) => set((state) => ({...state, typedWords: words})),
+}))
+
+const useEnemyStore = create<EnemyStore>()((set, get) => ({
   enemies: undefined,
   getEnemies: () => get().enemies,
   enemyFocused: undefined,
@@ -20,4 +37,4 @@ const useStore = create<Store>()((set, get) => ({
 
 
 
-export {useStore}
+export {useEnemyStore, useWordStore}

@@ -102,7 +102,15 @@ button:focus-visible {
   color: white;
 }
 
-.input {
-  display: inline;
-  width: 40%;
+/* .input { */
+/*   display: inline; */
+/*   width: 40%; */
+/* } */
+
+.invisibleInput {
+  opacity: 0; /* Hides the input visually */
+  background: transparent; /* Makes the input field invisible */
+  border: none; /* Removes any visible border */
+  padding: 0; /* Removes any padding */
+  margin: 0; /* Removes any margin */
 }
