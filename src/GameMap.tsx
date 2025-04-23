@@ -1,6 +1,5 @@
 import { EnemyObject, Pos, Status } from "./Enemy.tsx";
 import { Node } from "./Node.tsx";
-import { v4 as uuidv4 } from "uuid";
 import {GRID_Y_LENGTH, GRID_X_LENGTH, PLAYER_POS} from "./constants.tsx"
 import { useEnemyStore } from "./state.tsx";
 
@@ -26,13 +25,14 @@ function GameMap() {
         status = enemy === undefined ? Status.Disabled : enemy.status;
         word = enemy === undefined ? "" : enemy.word;
         focus = enemy === undefined ? false : enemy.focus;
-        key = enemy === undefined ? uuidv4() : enemy.name;
+        key = enemy === undefined ? crypto.randomUUID() : enemy.name;
         typedWord = enemy === undefined ? "" : enemy.typedWord;
       }
 
       currentRow.push(
         <Node
           _typedWord={typedWord}
+          key={key}
           name={key}
           status={status}
           _word={word}

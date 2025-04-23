@@ -6,16 +6,19 @@ import {
 import { words } from "./words1k.json";
 
 export const constructEnemies = (n: number) => {
+  const DONUT_THRESHOLD = 3
   const scrambled = words.sort(() => Math.random() - 0.5);
   const n_words = scrambled.slice(0, n);
   console.log(n_words);
   return n_words.map((word, i) => {
+      const [ymin, ymax] = [[0, Math.floor(GRID_Y_LENGTH / 2) - DONUT_THRESHOLD], [Math.floor(GRID_Y_LENGTH / 2) + DONUT_THRESHOLD, GRID_Y_LENGTH]][Math.floor(Math.random() * 2)]
+      const [xmin, xmax] = [[0, Math.floor(GRID_X_LENGTH / 2) - DONUT_THRESHOLD], [Math.floor(GRID_X_LENGTH / 2) + DONUT_THRESHOLD, GRID_X_LENGTH]][Math.floor(Math.random() * 2)]
     return {
       name: `s${i}`,
       word: word,
       position: {
-        y: Math.floor(Math.random() * GRID_Y_LENGTH),
-        x: Math.floor(Math.random() * GRID_X_LENGTH),
+        y: Math.floor(Math.random() * (ymax - ymin + 1)) + ymin,
+        x: Math.floor(Math.random() * (xmax - xmin + 1)) + xmin,
       },
       status: Status.Inactive,
       focus: false,

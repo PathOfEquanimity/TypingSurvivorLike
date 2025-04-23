@@ -59,11 +59,17 @@ function nextStep(current: Pos, target: Pos, visited: Pos[]) {
 // TODO: refactor the game loop to use the requestAnimationFrame, and change the logic to support it, and see if it sovles my problems
 function App() {
     const [init, setInit] = useState(false)
+    const [life, setLife] = useState(MAX_LIFE)
+
     const {createEnemies, getEnemies, setEnemies} = useEnemyStore()
     const {getWords} = useWordStore()
     const gameLogic = (delta: number) => {
-        const enemies = getEnemies()
-        // throw Error;
+          const enemies = getEnemies()
+          if (life <= 0){
+              location.reload();
+              return
+          }
+          let newLife = life
           const visited: Pos[] = [];
           if(!enemies)
               return;
@@ -76,6 +82,7 @@ function App() {
             }
             if (enemy.status == Status.Active && enemy.typedWord == enemy.word){
                 enemy.status = Status.Disabled
+                enemy.focus = false;
             }
             
             if (enemy.status == Status.Inactive) {
@@ -89,13 +96,9 @@ function App() {
             ) {
               enemy.status = Status.Disabled;
               enemy.focus = false;
-            } else if (
-              enemy.position.y == PLAYER_POS.y &&
-              enemy.position.x == PLAYER_POS.x &&
-              enemy.status == Status.Active
-            ) {
-              enemy.status = Status.Disabled;
-              enemy.focus = false;
+              console.log(life, newLife)
+              newLife -= 1 
+              console.log(life, newLife)
             } else if (enemy.status == Status.Active) {
                 enemy.timeActivated += delta
                 if (enemy.timeActivated >= MOVEMENT_THRESHOLD){
@@ -106,8 +109,10 @@ function App() {
             }
             return enemy;
           });
+
           new_enemies = focusEnemy(new_enemies);
           setEnemies(new_enemies);
+          setLife(newLife)
     }
 
   const lastTimeRef = useRef(0);
@@ -141,7 +146,7 @@ function App() {
     //
   return (
     <>
-        {/* <LifeBar life={life} maxLife={MAX_LIFE} /> */}
+        <LifeBar life={life} maxLife={MAX_LIFE} />
         <GameMap />
     </>
   );
