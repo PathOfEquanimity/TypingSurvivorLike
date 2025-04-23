@@ -22,7 +22,7 @@ const MAX_LIFE = 3;
 const DAMAGE = 1;
 
 
-function nextStep(current: Pos, target: Pos, visited: Pos[]) {
+function nextStep(current: Pos, target: Pos, visited: Pos[], allPositions: Pos[]) {
   const options = [
     { y: 0, x: 1 },
     { y: 1, x: 0 },
@@ -39,6 +39,9 @@ function nextStep(current: Pos, target: Pos, visited: Pos[]) {
       if (
         visited.find((e) => new_current.y == e.y && new_current.x == e.x) !=
         undefined
+        ||  
+        allPositions.find((e) => new_current.y == e.y && new_current.x == e.x) !=
+        undefined
       ) {
         return acc;
       }
@@ -53,10 +56,6 @@ function nextStep(current: Pos, target: Pos, visited: Pos[]) {
 }
 
 
-//NOTE: what exactly am I trying to improve by introducing global state?
-// Sure it solves the issue of props drill downs but that's not what I had problems with
-
-// TODO: refactor the game loop to use the requestAnimationFrame, and change the logic to support it, and see if it sovles my problems
 function App() {
     const [init, setInit] = useState(false)
     const [life, setLife] = useState(MAX_LIFE)
@@ -102,7 +101,12 @@ function App() {
             } else if (enemy.status == Status.Active) {
                 enemy.timeActivated += delta
                 if (enemy.timeActivated >= MOVEMENT_THRESHOLD){
-                      enemy.position = nextStep(enemy.position, PLAYER_POS, visited);
+                      const allPositions = enemies.reduce((acc: Pos[], {position, status}: {position: Pos, status: Status})=> {
+                          if ([Status.Active, Status.Inactive].includes(status))
+                              return [...acc, position]
+                          return acc
+                      }, [])
+                      enemy.position = nextStep(enemy.position, PLAYER_POS, visited, allPositions);
                       visited.push(enemy.position);
                       enemy.timeActivated = 0
                 }
@@ -124,7 +128,7 @@ function App() {
             setInit(true)
         }
 
-       let animationFrameId: number;
+        let animationFrameId: number;
 
         const gameLoop = (timestamp: DOMHighResTimeStamp) => {
             if (!lastTimeRef.current) lastTimeRef.current = timestamp;
@@ -132,7 +136,6 @@ function App() {
             lastTimeRef.current = timestamp;
             totalDelta.current += deltaTime
 
-            // gameLogic(deltaTime)
             if (totalDelta.current >= 0.1){
                 gameLogic(totalDelta.current)
                 totalDelta.current = 0
