@@ -47,16 +47,28 @@ function Node({
       }))
   }
 
-  let style = {};
+  // let style = {};
+  // if (status == Status.Hero){
+  //     style = { backgroundColor: "green" };
+  // } else if (status == Status.Active && focus) {
+  //   style = { backgroundColor: "", outline: "5px solid red" };
+  // } else if (status == Status.Active) {
+  //   style = { backgroundColor: "" };
+  // } else if (status == Status.Inactive) style = { backgroundColor: "yellow" };
+  let className = "node"
+
   if (status == Status.Hero){
-      style = { backgroundColor: "green" };
+      className = "heroNode" 
   } else if (status == Status.Active && focus) {
-    style = { backgroundColor: "", outline: "5px solid red" };
+      className = "activeFocusedNode" 
   } else if (status == Status.Active) {
-    style = { backgroundColor: "" };
-  } else if (status == Status.Inactive) style = { backgroundColor: "yellow" };
-  return (
-    <div key={name} className={"node"} style={style}>
+      className = "activeNode";
+  } else if (status == Status.Inactive) {
+      className = "inactiveNode"
+    }
+
+    return (
+    <div key={name} className={className}>
       {status == Status.Active ? (
         <>
           {wordObject?.map(({letter, color}: {letter: string, color: string})=> {
@@ -64,7 +76,6 @@ function Node({
           })}
           <input
             className="invisibleInput"
-            style={style}
             autoFocus={focus && status == Status.Active}
             value={typedWord}
             onChange={onWordTyped}
