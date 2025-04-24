@@ -2,6 +2,14 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { Status } from "./Enemy";
 import { useWordStore } from "./state";
 
+
+const findLetterSize = (word_length: number) => {
+    const padding = 0;
+    const node_size = 80;
+    return (node_size - padding) / word_length
+    
+}
+
 function Node({
   name,
   status,
@@ -72,7 +80,7 @@ function Node({
       {status == Status.Active ? (
         <>
           {wordObject?.map(({letter, color}: {letter: string, color: string})=> {
-              return <span key={crypto.randomUUID()} style={{color: color, fontSize: "22px", fontWeight: "bold"}}>{letter}</span>
+              return <span key={crypto.randomUUID()} style={{color: color, fontSize: `${findLetterSize(_word.length)}px`, fontWeight: "bold"}}>{letter}</span>
           })}
           <input
             className="invisibleInput"
