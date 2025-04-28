@@ -22,6 +22,15 @@ const MAX_LIFE = 3;
 const DAMAGE = 1;
 
 
+/**
+ * Determines the optimal next position for an entity to move from its current location toward a target, avoiding visited and occupied positions.
+ *
+ * @param current - The entity's current position.
+ * @param target - The target position to move toward.
+ * @param visited - Positions already visited in the current path.
+ * @param allPositions - All positions currently occupied by other entities.
+ * @returns The next position that brings the entity closest to the target while avoiding collisions.
+ */
 function nextStep(current: Pos, target: Pos, visited: Pos[], allPositions: Pos[]) {
   const options = [
     { y: 0, x: 1 },
@@ -56,6 +65,13 @@ function nextStep(current: Pos, target: Pos, visited: Pos[], allPositions: Pos[]
 }
 
 
+/**
+ * Main React component for the game, managing enemy movement, player life, and game loop.
+ *
+ * Initializes enemies, updates their states, handles player life reduction on collision, and triggers re-rendering of the game map and life bar.
+ *
+ * @remark The game loop uses `requestAnimationFrame` for smooth updates and reloads the page when player life reaches zero.
+ */
 function App() {
     const [init, setInit] = useState(false)
     const [life, setLife] = useState(MAX_LIFE)
