@@ -75,6 +75,7 @@ button:focus-visible {
 .grid {
   /* display: grid; */
   text-align: center;
+  outline: 1px solid rgba(144, 175, 175, 0.75);
 }
 
 .row {
@@ -114,7 +115,7 @@ button:focus-visible {
   height: 60px;
   background-color: white;
   overflow: hidden;
-  outline: 1px solid rgba(144, 175, 175, 0.75);
+  /* outline: 1px solid rgba(144, 175, 175, 0.75); */
 }
 
 .heroNode {
@@ -136,8 +137,8 @@ button:focus-visible {
 .activeFocusedNode {
   width: 60px;
   height: 60px;
-  outline: 5px solid red;
-  z-index: 10;
+  outline: 1px solid red;
+    z-index: 10;
 }
 
 .activeNode {

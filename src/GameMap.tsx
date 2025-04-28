@@ -36,7 +36,7 @@ function GameMap() {
           name={key}
           status={status}
           _word={word}
-          focus={focus}
+          _focus={focus}
         ></Node>,
       );
     }

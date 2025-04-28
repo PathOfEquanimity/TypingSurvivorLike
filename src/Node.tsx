@@ -14,19 +14,20 @@ function Node({
   name,
   status,
   _word,
-  focus,
+  _focus,
   _typedWord,
 }: {
   name: string;
   status: Status;
   _word: string;
-  focus: boolean;
+  _focus: boolean;
   _typedWord: string;
 }) {
   let {getWords, setWords} = useWordStore()
 
   const [typedWord, setTypedWord] = useState(_typedWord);
   const [wordObject, setWordObject] = useState<{letter: string, color: string}[]>()
+  const [focus, setFocus] = useState(_focus)
 
   useEffect(() => {
     setTypedWord(_typedWord);
@@ -43,6 +44,10 @@ function Node({
             return {letter: l, color: new_color}
         }))
   }, [_typedWord, _word]);
+
+  useEffect(() => {
+        setFocus(focus)
+  }, [_focus])
 
   const onWordTyped = (e: ChangeEvent<HTMLInputElement>) => {
       setTypedWord(e.target.value);
