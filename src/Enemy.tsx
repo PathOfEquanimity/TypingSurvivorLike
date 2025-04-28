@@ -105,7 +105,11 @@ const focusEnemy = (enemies: EnemyObject[]) => {
 //       typedWord: "",
 //     };
 //   });
-// };
+/**
+ * Renders a simple enemy component.
+ *
+ * @returns A React element displaying "Hello world".
+ */
 
 function Enemy() {
   return <p>Hello world</p>;

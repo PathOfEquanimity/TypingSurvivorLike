@@ -4,6 +4,11 @@ import {GRID_Y_LENGTH, GRID_X_LENGTH, PLAYER_POS} from "./constants.tsx"
 import { useEnemyStore } from "./state.tsx";
 
 
+/**
+ * Renders the game map as a grid of nodes representing the player and active enemies.
+ *
+ * Each cell displays either the hero or an enemy, with properties reflecting their current state.
+ */
 function GameMap() {
   const { getEnemies } = useEnemyStore()
   const grid = [];

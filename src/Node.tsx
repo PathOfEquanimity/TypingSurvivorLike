@@ -10,6 +10,19 @@ const findLetterSize = (word_length: number) => {
     
 }
 
+/**
+ * Renders a word node that displays each letter with color-coded feedback based on user input and node status.
+ *
+ * The node visually indicates correct, incorrect, and untyped letters by coloring them green, red, or black, respectively. When active and focused, it provides an invisible input for typing, updating both local and global state as the user types.
+ *
+ * @param name - Unique identifier for the node.
+ * @param status - The current status of the node (e.g., Hero, Active, Inactive).
+ * @param _word - The target word to be displayed and typed.
+ * @param _focus - Whether the node should be focused for input.
+ * @param _typedWord - The current typed input for this node.
+ *
+ * @returns A React element representing the node with dynamic letter coloring and input handling.
+ */
 function Node({
   name,
   status,
