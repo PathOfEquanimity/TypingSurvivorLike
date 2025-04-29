@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import {
   EnemyObject,

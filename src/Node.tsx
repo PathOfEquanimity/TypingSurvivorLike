@@ -87,7 +87,7 @@ function Node({
   }
 
   return (
-    <div key={name} className={className}>
+    <div key={name} className={className + " nodeBase"}>
       {status == Status.Active ? (
         <>
           {wordObject?.map(

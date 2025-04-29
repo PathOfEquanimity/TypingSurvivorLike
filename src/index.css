@@ -117,24 +117,20 @@ button:focus-visible {
 }
 
 .node {
-  composes: nodeBase;
   background: white;
 }
 .heroNode {
-  composes: nodeBase;
   background: green;
   outline: 1px solid rgba(144, 175, 175, 0.75);
 }
 .inactiveNode {
-  composes: nodeBase;
   background: yellow;
   outline: 1px solid rgba(144, 175, 175, 0.75);
 }
-.activeNode {
-  composes: nodeBase;
-}
+
+.activeNode {}
+
 .activeFocusedNode {
-  composes: nodeBase;
   outline: 1px solid red;
   position: relative;
   z-index: 10;
