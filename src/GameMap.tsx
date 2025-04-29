@@ -25,7 +25,7 @@ function GameMap() {
         status = enemy === undefined ? Status.Disabled : enemy.status;
         word = enemy === undefined ? "" : enemy.word;
         focus = enemy === undefined ? false : enemy.focus;
-        key = enemy === undefined ? crypto.randomUUID() : enemy.name;
+        key = enemy === undefined ? `${y}:${x}` : enemy.name;
         typedWord = enemy === undefined ? "" : enemy.typedWord;
       }
 

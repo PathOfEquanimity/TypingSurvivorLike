@@ -110,40 +110,14 @@ button:focus-visible {
   /* overflow: hidden; */
 }
 
-.node {
-  width: 60px;
-  height: 60px;
-  background-color: white;
-  overflow: hidden;
-  /* outline: 1px solid rgba(144, 175, 175, 0.75); */
-}
-
-.heroNode {
-  width: 60px;
-  height: 60px;
-  background-color: green;
-  overflow: hidden;
-  outline: 1px solid rgba(144, 175, 175, 0.75);
-}
-
-.inactiveNode {
-  width: 60px;
-  height: 60px;
-  background-color: yellow;
-  overflow: hidden;
-  outline: 1px solid rgba(144, 175, 175, 0.75);
-}
-
-.activeFocusedNode {
-  width: 60px;
-  height: 60px;
-  outline: 1px solid red;
-    z-index: 10;
-}
-
-.activeNode {
+.nodeBase {
   width: 60px;
   height: 60px;
   overflow: hidden;
-  /* outline: 5px solid red; */
 }
+
+.node         { composes: nodeBase; background: white;}
+.heroNode     { composes: nodeBase; background: green;  outline: 1px solid rgba(144, 175, 175, 0.75); }
+.inactiveNode { composes: nodeBase; background: yellow; outline: 1px solid rgba(144, 175, 175, 0.75); }
+.activeNode   { composes: nodeBase;                     }
+.activeFocusedNode { composes: nodeBase; outline: 1px solid red; position: relative; z-index: 10; }

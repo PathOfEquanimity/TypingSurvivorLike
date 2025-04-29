@@ -31,6 +31,9 @@ function Node({
 
   useEffect(() => {
     setTypedWord(_typedWord);
+  }, [_typedWord, _word]);
+
+  useEffect(() => {
     if (_word != undefined)
         setWordObject(Array.from(_word).map((l, i) => {
             let new_color; 
@@ -43,31 +46,29 @@ function Node({
             }
             return {letter: l, color: new_color}
         }))
-  }, [_typedWord, _word]);
+  }, [])
 
   useEffect(() => {
-        setFocus(focus)
+        setFocus(_focus)
   }, [_focus])
 
   const onWordTyped = (e: ChangeEvent<HTMLInputElement>) => {
       setTypedWord(e.target.value);
-      console.log(e.target.value)
       const filtered = getWords().filter(({key}: {key: string}) => key != name)
       setWords([...filtered, {key: name, typedWord: e.target.value}])
-      setWordObject(wordObject?.map((obj, i)=> {
-          let new_color = e.target.value[i] == obj.letter ? "green" : obj.color
-          return {letter: obj.letter, color: new_color}
+      setWordObject(Array.from(_word).map((l, i)=> {
+            let new_color; 
+            if (e.target.value[i] == undefined){
+                new_color = "black"
+            } else if (e.target.value[i] == l){
+                new_color = "green"
+            } else{
+                new_color = "red"
+            }
+            return {letter: l, color: new_color}
       }))
   }
 
-  // let style = {};
-  // if (status == Status.Hero){
-  //     style = { backgroundColor: "green" };
-  // } else if (status == Status.Active && focus) {
-  //   style = { backgroundColor: "", outline: "5px solid red" };
-  // } else if (status == Status.Active) {
-  //   style = { backgroundColor: "" };
-  // } else if (status == Status.Inactive) style = { backgroundColor: "yellow" };
   let className = "node"
 
   if (status == Status.Hero){
@@ -84,8 +85,9 @@ function Node({
     <div key={name} className={className}>
       {status == Status.Active ? (
         <>
-          {wordObject?.map(({letter, color}: {letter: string, color: string})=> {
-              return <span key={crypto.randomUUID()} style={{color: color, fontSize: `${findLetterSize(_word.length)}px`, fontWeight: "bold"}}>{letter}</span>
+          {wordObject?.map(({letter, color}: {letter: string, color: string}, i)=> {
+              return <span key={`${name}: ${i}`} style={{color: color, fontSize: `${findLetterSize(_word.length)}px`, fontWeight: "bold"}}>{letter}</span>
+
           })}
           <input
             className="invisibleInput"
