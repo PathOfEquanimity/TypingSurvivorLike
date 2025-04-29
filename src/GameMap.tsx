@@ -1,11 +1,10 @@
 import { EnemyObject, Pos, Status } from "./Enemy.tsx";
 import { Node } from "./Node.tsx";
-import {GRID_Y_LENGTH, GRID_X_LENGTH, PLAYER_POS} from "./constants.tsx"
+import { GRID_Y_LENGTH, GRID_X_LENGTH, PLAYER_POS } from "./constants.tsx";
 import { useEnemyStore } from "./state.tsx";
 
-
 function GameMap() {
-  const { getEnemies } = useEnemyStore()
+  const { getEnemies } = useEnemyStore();
   const grid = [];
   for (let y = 0; y < GRID_Y_LENGTH; y++) {
     const currentRow = [];
