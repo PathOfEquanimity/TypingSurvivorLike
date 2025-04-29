@@ -17,7 +17,6 @@ const MIN = 1;
 const ACTIVATION_THRESHOLD = 9900;
 const MOVEMENT_THRESHOLD = 1;
 const MAX_LIFE = 3;
-const DAMAGE = 1;
 
 function nextStep(
   current: Pos,
