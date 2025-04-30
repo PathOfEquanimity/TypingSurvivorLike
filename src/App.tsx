@@ -84,12 +84,6 @@ function App() {
       let newLife = localLife;
       const visited: Pos[] = [];
       if (!enemies) return;
-      if (
-        enemies.every(
-          ({ status }: { status: Status }) => status == Status.Disabled,
-        )
-      )
-        throw Error;
       let new_enemies = enemies!.map((enemy: EnemyObject) => {
         const words = getWords().find(
           ({ key }: { key: string }) => key == enemy.name,
@@ -124,7 +118,7 @@ function App() {
                 { position, status }: { position: Pos; status: Status },
               ) => {
                 if ([Status.Active, Status.Inactive].includes(status))
-                  return [...acc, position];
+                  acc.push(position);
                 return acc;
               },
               [],
