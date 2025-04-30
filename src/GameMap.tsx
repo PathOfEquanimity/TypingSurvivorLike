@@ -1,16 +1,10 @@
-import { EnemyObject, Pos, Status } from "./Enemy.tsx";
+import { EnemyObject, Status } from "./Enemy.tsx";
 import { Node } from "./Node.tsx";
-import { v4 as uuidv4 } from "uuid";
+import { GRID_Y_LENGTH, GRID_X_LENGTH, PLAYER_POS } from "./constants.tsx";
+import { useEnemyStore } from "./state.tsx";
 
-const GRID_Y_LENGTH = 10;
-const GRID_X_LENGTH = 20;
-const PLAYER_POS: Pos = {
-  y: Math.floor(GRID_Y_LENGTH / 2),
-  x: Math.floor(GRID_X_LENGTH / 2),
-};
-
-
-function GameMap({ enemies }: { enemies: EnemyObject[] }) {
+function GameMap() {
+  const { getEnemies } = useEnemyStore(); // eslint-disable-line react-hooks/rules-of-hooks
   const grid = [];
   for (let y = 0; y < GRID_Y_LENGTH; y++) {
     const currentRow = [];
@@ -19,9 +13,10 @@ function GameMap({ enemies }: { enemies: EnemyObject[] }) {
       let word = "Hero";
       let focus = false;
       let key = "h1";
+      let typedWord = "";
       if (!(y == PLAYER_POS.y && x == PLAYER_POS.x)) {
-        const enemy = enemies.find(
-          (enemy) =>
+        const enemy = getEnemies()?.find(
+          (enemy: EnemyObject) =>
             enemy.position.y == y &&
             enemy.position.x == x &&
             enemy.status != Status.Disabled,
@@ -29,14 +24,18 @@ function GameMap({ enemies }: { enemies: EnemyObject[] }) {
         status = enemy === undefined ? Status.Disabled : enemy.status;
         word = enemy === undefined ? "" : enemy.word;
         focus = enemy === undefined ? false : enemy.focus;
-        key = enemy === undefined ? uuidv4() : enemy.name;
+        key = enemy === undefined ? `${y}:${x}` : enemy.name;
+        typedWord = enemy === undefined ? "" : enemy.typedWord;
       }
+
       currentRow.push(
         <Node
+          _typedWord={typedWord}
+          key={key}
           name={key}
           status={status}
           _word={word}
-          focus={focus}
+          _focus={focus}
         ></Node>,
       );
     }
@@ -59,4 +58,4 @@ function GameMap({ enemies }: { enemies: EnemyObject[] }) {
   );
 }
 
-export { GameMap, PLAYER_POS, GRID_Y_LENGTH, GRID_X_LENGTH };
+export { GameMap };

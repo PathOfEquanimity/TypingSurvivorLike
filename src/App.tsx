@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import {
   EnemyObject,
@@ -7,42 +7,23 @@ import {
   findDistance,
   focusEnemy,
 } from "./Enemy.tsx";
-import {
-  GameMap,
-  PLAYER_POS,
-  GRID_Y_LENGTH,
-  GRID_X_LENGTH,
-} from "./GameMap.tsx";
-import { words } from "./words1k.json";
+import { PLAYER_POS } from "./constants.tsx";
+import { GameMap } from "./GameMap.tsx";
 import LifeBar from "./LifeBar.tsx";
+import { useEnemyStore, useWordStore } from "./state.tsx";
 
-const MAX = 100 + 1; // account for exclusivity
+const MAX = 10000 + 1; // account for exclusivity
 const MIN = 1;
-const ACTIVATION_THRESHOLD = 80;
+const ACTIVATION_THRESHOLD = 9900;
+const MOVEMENT_THRESHOLD = 1;
 const MAX_LIFE = 3;
-const DAMAGE = 1;
 
-const constructEnemies = (n: number) => {
-  const scrambled = words.sort(() => Math.random() - 0.5);
-  const n_words = scrambled.slice(0, n);
-  console.log(n_words);
-  return n_words.map((word, i) => {
-    return {
-      name: `s${i}`,
-      word: word,
-      position: {
-        y: Math.floor(Math.random() * GRID_Y_LENGTH),
-        x: Math.floor(Math.random() * GRID_X_LENGTH),
-      },
-      status: Status.Inactive,
-      focus: false,
-    };
-  });
-};
-
-const EnemyContext = createContext({});
-
-function nextStep(current: Pos, target: Pos, visited: Pos[]) {
+function nextStep(
+  current: Pos,
+  target: Pos,
+  visited: Pos[],
+  allPositions: Pos[],
+) {
   const options = [
     { y: 0, x: 1 },
     { y: 1, x: 0 },
@@ -58,7 +39,10 @@ function nextStep(current: Pos, target: Pos, visited: Pos[]) {
       const new_current = { y: current.y + y, x: current.x + x };
       if (
         visited.find((e) => new_current.y == e.y && new_current.x == e.x) !=
-        undefined
+          undefined ||
+        allPositions.find(
+          (e) => new_current.y == e.y && new_current.x == e.x,
+        ) != undefined
       ) {
         return acc;
       }
@@ -72,29 +56,47 @@ function nextStep(current: Pos, target: Pos, visited: Pos[]) {
   return final.pos;
 }
 
-const ENEMIES = constructEnemies(10);
-
 function App() {
-  const [enemies, setEnemies] = useState<EnemyObject[]>(ENEMIES);
-  const [word, setWord] = useState("");
+  const [init, setInit] = useState(false);
   const [life, setLife] = useState(MAX_LIFE);
-  const [restart, setRestart] = useState(false);
-  // Enemies interaction
+
+  const { createEnemies, getEnemies, setEnemies } = useEnemyStore();
+  const { getWords } = useWordStore();
+
+  const lastTimeRef = useRef(0);
+  const totalDelta = useRef(0);
+
   useEffect(() => {
-    let tracked_life = MAX_LIFE;
-    let timesRun = 0;
-    const interval = setInterval(() => {
-      if (tracked_life <= 0) {
-        window.alert("You lost")
-        setEnemies(constructEnemies(10));
-        setWord("");
-        setLife(MAX_LIFE);
-        setRestart(!restart);
-        return () => clearInterval(interval);
+    if (!init) {
+      createEnemies(10, 3);
+      setInit(true);
+    }
+
+    let animationFrameId: number;
+    let localLife = life;
+
+    const gameLogic = (delta: number) => {
+      const enemies = getEnemies();
+      if (localLife <= 0) {
+        location.reload();
+        return;
       }
-      timesRun++;
+      let newLife = localLife;
       const visited: Pos[] = [];
-      let new_enemies = enemies.map((enemy) => {
+      if (!enemies) return;
+      let new_enemies = enemies!.map((enemy: EnemyObject) => {
+        const words = getWords().find(
+          ({ key }: { key: string }) => key == enemy.name,
+        );
+
+        if (words != undefined) {
+          enemy.typedWord = words.typedWord;
+        }
+        if (enemy.status == Status.Active && enemy.typedWord == enemy.word) {
+          enemy.status = Status.Disabled;
+          enemy.focus = false;
+        }
+
         if (enemy.status == Status.Inactive) {
           // TODO: improve threshold activation
           if (Math.random() * (MAX - MIN) + MIN >= ACTIVATION_THRESHOLD)
@@ -106,33 +108,63 @@ function App() {
         ) {
           enemy.status = Status.Disabled;
           enemy.focus = false;
-          tracked_life -= DAMAGE;
-          setLife(tracked_life);
-          // TODO: now it sets on when it was on player square for one, move rather than when it's about to hit. The easy to fix it to take the area around the player and check for it instead for the play_pos
+          newLife -= 1;
         } else if (enemy.status == Status.Active) {
-          enemy.position = nextStep(enemy.position, PLAYER_POS, visited);
-          visited.push(enemy.position);
+          enemy.timeActivated += delta;
+          if (enemy.timeActivated >= MOVEMENT_THRESHOLD) {
+            const allPositions = enemies.reduce(
+              (
+                acc: Pos[],
+                { position, status }: { position: Pos; status: Status },
+              ) => {
+                if ([Status.Active, Status.Inactive].includes(status))
+                  acc.push(position);
+                return acc;
+              },
+              [],
+            );
+            enemy.position = nextStep(
+              enemy.position,
+              PLAYER_POS,
+              visited,
+              allPositions,
+            );
+            visited.push(enemy.position);
+            enemy.timeActivated = 0;
+          }
         }
         return enemy;
       });
+
       new_enemies = focusEnemy(new_enemies);
-      // Check if there's no active focus
       setEnemies(new_enemies);
-    }, 1000);
-
-    return () => {
-      clearInterval(interval);
+      setLife(newLife);
+      localLife = newLife;
     };
-  }, [restart]);
 
+    const gameLoop = (timestamp: DOMHighResTimeStamp) => {
+      if (!lastTimeRef.current) lastTimeRef.current = timestamp;
+      const deltaTime = (timestamp - lastTimeRef.current) / 1000; // Convert to seconds
+      lastTimeRef.current = timestamp;
+      totalDelta.current += deltaTime;
+
+      if (totalDelta.current >= 0.1) {
+        gameLogic(totalDelta.current);
+        totalDelta.current = 0;
+      }
+      animationFrameId = requestAnimationFrame(gameLoop);
+    };
+
+    animationFrameId = requestAnimationFrame(gameLoop);
+    return () => cancelAnimationFrame(animationFrameId);
+  }, []);
+  //
   return (
     <>
       <LifeBar life={life} maxLife={MAX_LIFE} />
-      <EnemyContext.Provider value={{ enemies, setEnemies, word, setWord }}>
-        <GameMap enemies={enemies} />
-      </EnemyContext.Provider>
+      <GameMap />
     </>
   );
 }
 
-export { App, EnemyContext };
+export { App };

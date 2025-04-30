@@ -67,13 +67,6 @@ button:focus-visible {
   }
 }
 /* With css I don't even know where to start, I kinda know what I need to achieve, but I'm clueless about how to actually achieve it beyond just googlin for styles and applying it. I don't know how to reason about css. Since it's usually consider to be something stupid, something copyable, mostly propagated by Moiz  */
-.node {
-  width: 60px;
-  height: 60px;
-  background-color: white;
-    overflow: hidden;
-  outline: 1px solid rgba(144, 175, 175, 0.75);
-}
 
 .active {
   outline: 1px solid blue;
@@ -82,6 +75,7 @@ button:focus-visible {
 .grid {
   /* display: grid; */
   text-align: center;
+  outline: 1px solid rgba(144, 175, 175, 0.75);
 }
 
 .row {
@@ -102,7 +96,42 @@ button:focus-visible {
   color: white;
 }
 
-.input {
-    display: inline;
-    width: 40%;
+/* .input { */
+/*   display: inline; */
+/*   width: 40%; */
+/* } */
+
+.invisibleInput {
+  opacity: 0; /* Hides the input visually */
+  background: transparent; /* Makes the input field invisible */
+  border: none; /* Removes any visible border */
+  padding: 0; /* Removes any padding */
+  margin: 0; /* Removes any margin */
+  /* overflow: hidden; */
+}
+
+.nodeBase {
+  width: 60px;
+  height: 60px;
+  overflow: hidden;
+}
+
+.node {
+  background: white;
+}
+.heroNode {
+  background: green;
+  outline: 1px solid rgba(144, 175, 175, 0.75);
+}
+.inactiveNode {
+  background: yellow;
+  outline: 1px solid rgba(144, 175, 175, 0.75);
+}
+
+.activeNode {}
+
+.activeFocusedNode {
+  outline: 1px solid red;
+  position: relative;
+  z-index: 10;
 }

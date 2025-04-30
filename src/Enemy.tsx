@@ -1,4 +1,32 @@
-import { PLAYER_POS } from "./GameMap";
+import { GRID_Y_LENGTH, GRID_X_LENGTH, PLAYER_POS } from "./constants.tsx";
+import { words } from "./words1k.json";
+
+export const constructEnemies = (n: number, donutThreshold: number) => {
+  const scrambled = words.sort(() => Math.random() - 0.5);
+  const n_words = scrambled.slice(0, n);
+  return n_words.map((word, i) => {
+    const [ymin, ymax] = [
+      [0, Math.floor(GRID_Y_LENGTH / 2) - donutThreshold],
+      [Math.floor(GRID_Y_LENGTH / 2) + donutThreshold, GRID_Y_LENGTH],
+    ][Math.floor(Math.random() * 2)];
+    const [xmin, xmax] = [
+      [0, Math.floor(GRID_X_LENGTH / 2) - donutThreshold],
+      [Math.floor(GRID_X_LENGTH / 2) + donutThreshold, GRID_X_LENGTH],
+    ][Math.floor(Math.random() * 2)];
+    return {
+      name: `s${i}`,
+      word: word,
+      position: {
+        y: Math.floor(Math.random() * (ymax - ymin + 1)) + ymin,
+        x: Math.floor(Math.random() * (xmax - xmin + 1)) + xmin,
+      },
+      status: Status.Inactive,
+      focus: false,
+      typedWord: "",
+      timeActivated: 0,
+    };
+  });
+};
 
 enum Status {
   Active,
@@ -18,7 +46,8 @@ interface EnemyObject {
   status: Status;
   word: string;
   focus: boolean;
-  typedWord?: string;
+  typedWord: string;
+  timeActivated: number;
 }
 
 const findDistance = (p1: Pos, p2: Pos) => {

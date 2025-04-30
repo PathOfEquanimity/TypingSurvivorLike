@@ -1,56 +1,117 @@
-import { EnemyContext } from "./App";
-import { useContext, useState } from "react";
-import { Status, EnemyObject, focusEnemy  } from "./Enemy";
+import { ChangeEvent, useEffect, useState } from "react";
+import { Status } from "./Enemy";
+import { useWordStore } from "./state";
+
+const findLetterSize = (word_length: number) => {
+  const padding = 0;
+  const node_size = 80;
+  return (node_size - padding) / word_length;
+};
 
 function Node({
   name,
   status,
   _word,
-  focus,
+  _focus,
+  _typedWord,
 }: {
   name: string;
   status: Status;
   _word: string;
-  focus: boolean;
+  _focus: boolean;
+  _typedWord: string;
 }) {
-  let { enemies, setEnemies, word, setWord } = useContext(EnemyContext);
-  const [typedWord, setTypedWord] = useState("")
-  let style = {};
-  if (status == Status.Hero) style = { backgroundColor: "green" };
-  else if (status == Status.Active && focus) {
-    style = { backgroundColor: "red", outline: "5px solid blue" };
+  const { getWords, setWords } = useWordStore();
+
+  const [typedWord, setTypedWord] = useState(_typedWord);
+  const [wordObject, setWordObject] =
+    useState<{ letter: string; color: string }[]>();
+  const [focus, setFocus] = useState(_focus);
+
+  useEffect(() => {
+    setTypedWord(_typedWord);
+  }, [_typedWord, _word]);
+
+  useEffect(() => {
+    if (_word != undefined)
+      setWordObject(
+        Array.from(_word).map((l, i) => {
+          let new_color;
+          if (_typedWord[i] == undefined) {
+            new_color = "black";
+          } else if (_typedWord[i] == l) {
+            new_color = "green";
+          } else {
+            new_color = "red";
+          }
+          return { letter: l, color: new_color };
+        }),
+      );
+  }, []);
+
+  useEffect(() => {
+    setFocus(_focus);
+  }, [_focus]);
+
+  const onWordTyped = (e: ChangeEvent<HTMLInputElement>) => {
+    setTypedWord(e.target.value);
+    const filtered = getWords().filter(
+      ({ key }: { key: string }) => key != name,
+    );
+    setWords([...filtered, { key: name, typedWord: e.target.value }]);
+    setWordObject(
+      Array.from(_word).map((l, i) => {
+        let new_color;
+        if (e.target.value[i] == undefined) {
+          new_color = "black";
+        } else if (e.target.value[i] == l) {
+          new_color = "green";
+        } else {
+          new_color = "red";
+        }
+        return { letter: l, color: new_color };
+      }),
+    );
+  };
+
+  let className = "node";
+
+  if (status == Status.Hero) {
+    className = "heroNode";
+  } else if (status == Status.Active && focus) {
+    className = "activeFocusedNode";
   } else if (status == Status.Active) {
-    style = { backgroundColor: "red" };
-  } else if (status == Status.Inactive) style = { backgroundColor: "yellow" };
+    className = "activeNode";
+  } else if (status == Status.Inactive) {
+    className = "inactiveNode";
+  }
+
   return (
-    <div key={name} className={"node"} style={style}>
+    <div key={name} className={className + " nodeBase"}>
       {status == Status.Active ? (
         <>
-          <span className="typed">{word}</span>
+          {wordObject?.map(
+            ({ letter, color }: { letter: string; color: string }, i) => {
+              return (
+                <span
+                  key={`${name}: ${i}`}
+                  style={{
+                    color: color,
+                    fontSize: `${findLetterSize(_word.length)}px`,
+                    fontWeight: "bold",
+                  }}
+                >
+                  {letter}
+                </span>
+              );
+            },
+          )}
           <input
-            className="input"
-            style={style}
+            className="invisibleInput"
             autoFocus={focus && status == Status.Active}
-            value={focus && status == Status.Active ? word : ""}
-            onChange={(e) => {
-              setWord(e.target.value);
-              if (e.target.value == _word) {
-                setEnemies(
-                  focusEnemy(
-                    enemies.map((enemy: EnemyObject) => {
-                      if (enemy.name == name) {
-                        enemy.status = Status.Disabled;
-                        enemy.focus = false;
-                      }
-                      return enemy;
-                    }),
-                  ),
-                );
-                setWord("");
-              }
-            }}
+            value={typedWord}
+            onChange={onWordTyped}
           />
-      <span className="toBeTyped">{_word}</span>
         </>
       ) : (
         ""
@@ -59,4 +120,4 @@ function Node({
   );
 }
 
-export {Node}
+export { Node };
