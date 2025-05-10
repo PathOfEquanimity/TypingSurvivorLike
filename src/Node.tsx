@@ -1,6 +1,5 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Status } from "./Enemy";
-import { useWordStore } from "./state";
 
 const findLetterSize = (word_length: number) => {
   const padding = 0;
