@@ -58,6 +58,7 @@ function nextStep(
 
 function App() {
   const [init, setInit] = useState(false);
+  const [score, setScore] = useState(0);
   const [life, setLife] = useState(MAX_LIFE);
   const [typedWord, setTypedWord] = useState("")
   const { createEnemies, getEnemies, setEnemies } = useEnemyStore();
@@ -75,6 +76,7 @@ function App() {
         if (enemy.status == Status.Active && enemy.typedWord == enemy.word) {
           enemy.status = Status.Disabled;
           enemy.focus = false;
+          setScore(score + enemy.word.length)
           setTypedWord("")
         }
         return enemy
@@ -170,6 +172,7 @@ function App() {
   return (
     <>
       <LifeBar life={life} maxLife={MAX_LIFE} />
+      <p>Score: {score}</p>
       <GameMap />
       <input
         className="invisibleInput"
@@ -177,6 +180,7 @@ function App() {
         value={typedWord}
         onChange={onWordTyped}
       />
+      
     </>
   );
 }
