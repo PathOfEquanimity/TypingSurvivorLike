@@ -116,6 +116,7 @@ function App() {
           enemy.status = Status.Disabled;
           enemy.focus = false;
           newLife -= 1;
+          setTypedWord("")
         } else if (enemy.status == Status.Active) {
           enemy.timeActivated += delta;
           if (enemy.timeActivated >= MOVEMENT_THRESHOLD) {

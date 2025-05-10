@@ -1,17 +1,6 @@
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 a {
   font-weight: 500;
@@ -54,7 +43,7 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
+@media (prefers-color-scheme: dark) {
   :root {
     color: #213547;
     background-color: #ffffff;
@@ -72,11 +61,11 @@ button:focus-visible {
   outline: 1px solid blue;
 }
 
-.grid {
-  /* display: grid; */
-  text-align: center;
-  outline: 1px solid rgba(144, 175, 175, 0.75);
-}
+/* .grid { */
+/*   /* display: grid; */ */
+/*   text-align: center; */
+/*   outline: 1px solid rgba(144, 175, 175, 0.75); */
+/* } */
 
 .row {
   display: flex;
@@ -117,15 +106,17 @@ button:focus-visible {
 }
 
 .node {
-  background: white;
+  @apply bg-white-500;
 }
+
 .heroNode {
-  background: green;
+  @apply bg-green-500;
+  /* background: green; */
   outline: 1px solid rgba(144, 175, 175, 0.75);
 }
 .inactiveNode {
-  background: yellow;
-  outline: 1px solid rgba(144, 175, 175, 0.75);
+    @apply bg-yellow-500;
+      outline: 1px solid rgba(144, 175, 175, 0.75);
 }
 
 .activeNode {}
