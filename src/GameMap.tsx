@@ -44,7 +44,7 @@ function GameMap() {
 
   // NOTE: displays grid
   return (
-    <div className="grid">
+    <div className="grid grid-cols-20">
       {grid.map((row, rowId) => {
         return (
           <div key={rowId} className="row">
