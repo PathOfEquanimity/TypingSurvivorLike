@@ -30,11 +30,11 @@ function Node({
         Array.from(_word).map((l, i) => {
           let new_color;
           if (_typedWord[i] == undefined) {
-            new_color = "black";
+            new_color = "text-black";
           } else if (_typedWord[i] == l) {
-            new_color = "green";
+            new_color = "text-green-500";
           } else {
-            new_color = "red";
+            new_color = "text-red-500";
           }
           return { letter: l, color: new_color };
         }),
@@ -67,8 +67,9 @@ function Node({
               return (
                 <span
                   key={`${name}: ${i}`}
+                  className={color}
                   style={{
-                    color: color,
+                    // color: color,
                     fontSize: `${findLetterSize(_word.length)}px`,
                     fontWeight: "bold",
                   }}

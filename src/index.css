@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@reference "tailwindcss";
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -43,7 +45,7 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   :root {
     color: #213547;
     background-color: #ffffff;
@@ -106,7 +108,7 @@ button:focus-visible {
 }
 
 .node {
-  @apply bg-white-500;
+  @apply bg-white;
 }
 
 .heroNode {
