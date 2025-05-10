@@ -10,7 +10,7 @@ import {
 import { PLAYER_POS } from "./constants.tsx";
 import { GameMap } from "./GameMap.tsx";
 import LifeBar from "./LifeBar.tsx";
-import { useEnemyStore, useWordStore } from "./state.tsx";
+import { useEnemyStore } from "./state.tsx";
 
 const MAX = 10000 + 1; // account for exclusivity
 const MIN = 1;
