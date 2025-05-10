@@ -21,8 +21,6 @@ function Node({
   _focus: boolean;
   _typedWord: string;
 }) {
-  const { getWords, setWords } = useWordStore();
-
   const [wordObject, setWordObject] =
     useState<{ letter: string; color: string }[]>();
   const [focus, setFocus] = useState(_focus);
@@ -43,23 +41,6 @@ function Node({
         }),
       );
   }, [_typedWord]);
-
-  useEffect(() => {
-    if (_word != undefined)
-      setWordObject(
-        Array.from(_word).map((l, i) => {
-          let new_color;
-          if (_typedWord[i] == undefined) {
-            new_color = "black";
-          } else if (_typedWord[i] == l) {
-            new_color = "green";
-          } else {
-            new_color = "red";
-          }
-          return { letter: l, color: new_color };
-        }),
-      );
-  }, []);
 
   useEffect(() => {
     setFocus(_focus);
