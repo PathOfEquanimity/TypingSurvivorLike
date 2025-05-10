@@ -68,8 +68,8 @@ function App() {
     const updated_enemy = enemies.find(({focus, status}: {focus: boolean, status: Status}) => {
         return focus == true && status == Status.Active
     })
-    let new_enemies = enemies!.map((enemy: EnemyObject) => {
-        if (updated_enemy?.name == enemy.name) {
+    const new_enemies = enemies!.map((enemy: EnemyObject) => {
+        if (updated_enemy && updated_enemy.name == enemy.name) {
           enemy.typedWord = e.target.value;
         }
         if (enemy.status == Status.Active && enemy.typedWord == enemy.word) {

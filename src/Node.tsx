@@ -40,7 +40,7 @@ function Node({
           return { letter: l, color: new_color };
         }),
       );
-  }, [_typedWord]);
+  }, [_typedWord, _word]);
 
   useEffect(() => {
     setFocus(_focus);
