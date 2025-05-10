@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, ChangeEvent } from "react";
 import "./App.css";
 import {
   EnemyObject,
@@ -59,9 +59,28 @@ function nextStep(
 function App() {
   const [init, setInit] = useState(false);
   const [life, setLife] = useState(MAX_LIFE);
-
+  const [typedWord, setTypedWord] = useState("")
   const { createEnemies, getEnemies, setEnemies } = useEnemyStore();
-  const { getWords } = useWordStore();
+
+  const onWordTyped = (e: ChangeEvent<HTMLInputElement>) => {
+    setTypedWord(e.target.value);
+    const enemies = getEnemies();
+    const updated_enemy = enemies.find(({focus, status}: {focus: boolean, status: Status}) => {
+        return focus == true && status == Status.Active
+    })
+    let new_enemies = enemies!.map((enemy: EnemyObject) => {
+        if (updated_enemy?.name == enemy.name) {
+          enemy.typedWord = e.target.value;
+        }
+        if (enemy.status == Status.Active && enemy.typedWord == enemy.word) {
+          enemy.status = Status.Disabled;
+          enemy.focus = false;
+          setTypedWord("")
+        }
+        return enemy
+    })
+    setEnemies(focusEnemy(new_enemies))
+  };
 
   const lastTimeRef = useRef(0);
   const totalDelta = useRef(0);
@@ -85,18 +104,6 @@ function App() {
       const visited: Pos[] = [];
       if (!enemies) return;
       let new_enemies = enemies!.map((enemy: EnemyObject) => {
-        const words = getWords().find(
-          ({ key }: { key: string }) => key == enemy.name,
-        );
-
-        if (words != undefined) {
-          enemy.typedWord = words.typedWord;
-        }
-        if (enemy.status == Status.Active && enemy.typedWord == enemy.word) {
-          enemy.status = Status.Disabled;
-          enemy.focus = false;
-        }
-
         if (enemy.status == Status.Inactive) {
           // TODO: improve threshold activation
           if (Math.random() * (MAX - MIN) + MIN >= ACTIVATION_THRESHOLD)
@@ -163,6 +170,12 @@ function App() {
     <>
       <LifeBar life={life} maxLife={MAX_LIFE} />
       <GameMap />
+      <input
+        className="invisibleInput"
+        autoFocus={true}
+        value={typedWord}
+        onChange={onWordTyped}
+      />
     </>
   );
 }

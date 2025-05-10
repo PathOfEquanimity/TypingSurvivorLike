@@ -23,14 +23,26 @@ function Node({
 }) {
   const { getWords, setWords } = useWordStore();
 
-  const [typedWord, setTypedWord] = useState(_typedWord);
   const [wordObject, setWordObject] =
     useState<{ letter: string; color: string }[]>();
   const [focus, setFocus] = useState(_focus);
 
   useEffect(() => {
-    setTypedWord(_typedWord);
-  }, [_typedWord, _word]);
+    if (_word != undefined)
+      setWordObject(
+        Array.from(_word).map((l, i) => {
+          let new_color;
+          if (_typedWord[i] == undefined) {
+            new_color = "black";
+          } else if (_typedWord[i] == l) {
+            new_color = "green";
+          } else {
+            new_color = "red";
+          }
+          return { letter: l, color: new_color };
+        }),
+      );
+  }, [_typedWord]);
 
   useEffect(() => {
     if (_word != undefined)
@@ -53,26 +65,6 @@ function Node({
     setFocus(_focus);
   }, [_focus]);
 
-  const onWordTyped = (e: ChangeEvent<HTMLInputElement>) => {
-    setTypedWord(e.target.value);
-    const filtered = getWords().filter(
-      ({ key }: { key: string }) => key != name,
-    );
-    setWords([...filtered, { key: name, typedWord: e.target.value }]);
-    setWordObject(
-      Array.from(_word).map((l, i) => {
-        let new_color;
-        if (e.target.value[i] == undefined) {
-          new_color = "black";
-        } else if (e.target.value[i] == l) {
-          new_color = "green";
-        } else {
-          new_color = "red";
-        }
-        return { letter: l, color: new_color };
-      }),
-    );
-  };
 
   let className = "node";
 
@@ -106,12 +98,6 @@ function Node({
               );
             },
           )}
-          <input
-            className="invisibleInput"
-            autoFocus={focus && status == Status.Active}
-            value={typedWord}
-            onChange={onWordTyped}
-          />
         </>
       ) : (
         ""
