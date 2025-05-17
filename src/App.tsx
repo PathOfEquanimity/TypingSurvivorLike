@@ -12,9 +12,6 @@ import { GameMap } from "./GameMap.tsx";
 import LifeBar from "./LifeBar.tsx";
 import { useEnemyStore } from "./state.tsx";
 
-const MAX = 10000 + 1; // account for exclusivity
-const MIN = 1;
-const ACTIVATION_THRESHOLD = 9900;
 const MOVEMENT_THRESHOLD = 1;
 const MAX_LIFE = 3;
 
@@ -60,29 +57,31 @@ function App() {
   const [init, setInit] = useState(false);
   const [score, setScore] = useState(0);
   const [life, setLife] = useState(MAX_LIFE);
-  const [typedWord, setTypedWord] = useState("")
+  const [typedWord, setTypedWord] = useState("");
   const { createEnemies, getEnemies, setEnemies } = useEnemyStore();
   const [level, setLevel] = useState(1);
 
   const onWordTyped = (e: ChangeEvent<HTMLInputElement>) => {
     setTypedWord(e.target.value);
     const enemies = getEnemies();
-    const updated_enemy = enemies.find(({focus, status}: {focus: boolean, status: Status}) => {
-        return focus == true && status == Status.Active
-    })
+    const updated_enemy = enemies.find(
+      ({ focus, status }: { focus: boolean; status: Status }) => {
+        return focus == true && status == Status.Active;
+      },
+    );
     const new_enemies = enemies!.map((enemy: EnemyObject) => {
-        if (updated_enemy && updated_enemy.name == enemy.name) {
-          enemy.typedWord = e.target.value;
-        }
-        if (enemy.status == Status.Active && enemy.typedWord == enemy.word) {
-          enemy.status = Status.Disabled;
-          enemy.focus = false;
-          setScore(score + enemy.word.length)
-          setTypedWord("")
-        }
-        return enemy
-    })
-    setEnemies(focusEnemy(new_enemies))
+      if (updated_enemy && updated_enemy.name == enemy.name) {
+        enemy.typedWord = e.target.value;
+      }
+      if (enemy.status == Status.Active && enemy.typedWord == enemy.word) {
+        enemy.status = Status.Disabled;
+        enemy.focus = false;
+        setScore(score + enemy.word.length);
+        setTypedWord("");
+      }
+      return enemy;
+    });
+    setEnemies(focusEnemy(new_enemies));
   };
 
   const lastTimeRef = useRef(0);
@@ -100,7 +99,7 @@ function App() {
 
     const gameLogic = (delta: number) => {
       const enemies = getEnemies();
-      // handle life 
+      // handle life
       if (localLife <= 0) {
         location.reload();
         return;
@@ -109,17 +108,27 @@ function App() {
       const visited: Pos[] = [];
       if (!enemies) return;
       // handle enemies
-      let toBeActivated: Set<string> = new Set(enemies.filter((enemy: EnemyObject)=> enemy.status == Status.Active).map((enemy) => enemy.name))
-      const inactiveEnemies = enemies.filter((enemy) => enemy.status == Status.Inactive)
-      if (inactiveEnemies.length >= localLevel - toBeActivated.size){
-          while (toBeActivated.size < localLevel){
-              toBeActivated.add(inactiveEnemies[Math.floor(Math.random() * inactiveEnemies.length)].name)
-       } } else {
-           inactiveEnemies.map((enemy) => toBeActivated.add(enemy.name))
-       }
+      const toBeActivated: Set<string> = new Set(
+        enemies
+          .filter((enemy: EnemyObject) => enemy.status == Status.Active)
+          .map((enemy) => enemy.name),
+      );
+      const inactiveEnemies = enemies.filter(
+        (enemy) => enemy.status == Status.Inactive,
+      );
+      if (inactiveEnemies.length >= localLevel - toBeActivated.size) {
+        while (toBeActivated.size < localLevel) {
+          toBeActivated.add(
+            inactiveEnemies[Math.floor(Math.random() * inactiveEnemies.length)]
+              .name,
+          );
+        }
+      } else {
+        inactiveEnemies.map((enemy) => toBeActivated.add(enemy.name));
+      }
       let new_enemies = enemies.map((enemy: EnemyObject) => {
-        if (toBeActivated.has(enemy.name) && enemy.status != Status.Active){
-            enemy.status = Status.Active
+        if (toBeActivated.has(enemy.name) && enemy.status != Status.Active) {
+          enemy.status = Status.Active;
         } else if (
           enemy.position.y == PLAYER_POS.y &&
           enemy.position.x == PLAYER_POS.x &&
@@ -128,7 +137,7 @@ function App() {
           enemy.status = Status.Disabled;
           enemy.focus = false;
           newLife -= 1;
-          setTypedWord("")
+          setTypedWord("");
         } else if (enemy.status == Status.Active) {
           enemy.timeActivated += delta;
           if (enemy.timeActivated >= MOVEMENT_THRESHOLD) {
@@ -160,10 +169,10 @@ function App() {
       setEnemies(new_enemies);
       setLife(newLife);
       localLife = newLife;
-      if (enemies.every(enemy => enemy.status == Status.Disabled)){
-          createEnemies(10, 3)
-          setLevel(localLevel + 1)
-          localLevel += 1
+      if (enemies.every((enemy) => enemy.status == Status.Disabled)) {
+        createEnemies(10, 3);
+        setLevel(localLevel + 1);
+        localLevel += 1;
       }
     };
 
@@ -196,7 +205,6 @@ function App() {
         value={typedWord}
         onChange={onWordTyped}
       />
-      
     </>
   );
 }
