@@ -62,6 +62,7 @@ function App() {
   const [life, setLife] = useState(MAX_LIFE);
   const [typedWord, setTypedWord] = useState("")
   const { createEnemies, getEnemies, setEnemies } = useEnemyStore();
+  const [level, setLevel] = useState(1);
 
   const onWordTyped = (e: ChangeEvent<HTMLInputElement>) => {
     setTypedWord(e.target.value);
@@ -95,9 +96,11 @@ function App() {
 
     let animationFrameId: number;
     let localLife = life;
+    let localLevel = level;
 
     const gameLogic = (delta: number) => {
       const enemies = getEnemies();
+      // handle life 
       if (localLife <= 0) {
         location.reload();
         return;
@@ -105,11 +108,18 @@ function App() {
       let newLife = localLife;
       const visited: Pos[] = [];
       if (!enemies) return;
-      let new_enemies = enemies!.map((enemy: EnemyObject) => {
-        if (enemy.status == Status.Inactive) {
-          // TODO: improve threshold activation
-          if (Math.random() * (MAX - MIN) + MIN >= ACTIVATION_THRESHOLD)
-            enemy.status = Status.Active;
+      // handle enemies
+      let toBeActivated: Set<string> = new Set(enemies.filter((enemy: EnemyObject)=> enemy.status == Status.Active).map((enemy) => enemy.name))
+      const inactiveEnemies = enemies.filter((enemy) => enemy.status == Status.Inactive)
+      if (inactiveEnemies.length >= localLevel - toBeActivated.size){
+          while (toBeActivated.size < localLevel){
+              toBeActivated.add(inactiveEnemies[Math.floor(Math.random() * inactiveEnemies.length)].name)
+       } } else {
+           inactiveEnemies.map((enemy) => toBeActivated.add(enemy.name))
+       }
+      let new_enemies = enemies.map((enemy: EnemyObject) => {
+        if (toBeActivated.has(enemy.name) && enemy.status != Status.Active){
+            enemy.status = Status.Active
         } else if (
           enemy.position.y == PLAYER_POS.y &&
           enemy.position.x == PLAYER_POS.x &&
@@ -150,6 +160,11 @@ function App() {
       setEnemies(new_enemies);
       setLife(newLife);
       localLife = newLife;
+      if (enemies.every(enemy => enemy.status == Status.Disabled)){
+          createEnemies(10, 3)
+          setLevel(localLevel + 1)
+          localLevel += 1
+      }
     };
 
     const gameLoop = (timestamp: DOMHighResTimeStamp) => {
@@ -172,6 +187,7 @@ function App() {
   return (
     <>
       <LifeBar life={life} maxLife={MAX_LIFE} />
+      <p>Level: {level}</p>
       <p>Score: {score}</p>
       <GameMap />
       <input
