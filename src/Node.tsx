@@ -45,7 +45,6 @@ function Node({
     setFocus(_focus);
   }, [_focus]);
 
-
   let className = "node";
 
   if (status == Status.Hero) {

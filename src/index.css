@@ -64,7 +64,8 @@ button:focus-visible {
 }
 
 /* .grid { */
-/*   /* display: grid; */ */
+/*   /* display: grid; */
+*/
 /*   text-align: center; */
 /*   outline: 1px solid rgba(144, 175, 175, 0.75); */
 /* } */
@@ -117,14 +118,40 @@ button:focus-visible {
   outline: 1px solid rgba(144, 175, 175, 0.75);
 }
 .inactiveNode {
-    @apply bg-yellow-500;
-      outline: 1px solid rgba(144, 175, 175, 0.75);
+  @apply bg-yellow-500;
+  outline: 1px solid rgba(144, 175, 175, 0.75);
 }
 
-.activeNode {}
+.activeNode {
+}
 
 .activeFocusedNode {
   outline: 1px solid red;
   position: relative;
   z-index: 10;
+}
+
+/* Leaderboard.css */
+.page {
+  @apply min-w-screen flex items-center justify-center bg-zinc-100 dark:bg-zinc-950;
+}
+
+.leaderboard {
+  @apply w-full max-w-md mx-auto mt-8 rounded-2xl shadow-lg overflow-hidden bg-white dark:bg-zinc-900;
+}
+
+.leaderboard-item {
+  @apply flex items-center justify-between p-4 border-b dark:border-zinc-700;
+}
+
+.leaderboard-item.gold {
+  @apply bg-yellow-100 dark:bg-yellow-900;
+}
+
+.leaderboard-name {
+  @apply font-medium text-zinc-800 dark:text-zinc-100;
+}
+
+.leaderboard-score {
+  @apply text-zinc-500 dark:text-zinc-400;
 }
