@@ -11,7 +11,7 @@ export interface LeaderboardEntry {
 }
 
 export function LeaderBoard() {
-  const [cookies, _] = useCookies<
+  const [cookies] = useCookies<
     "leaderboard",
     { leaderboard: LeaderboardEntry[] }
   >(["leaderboard"]);

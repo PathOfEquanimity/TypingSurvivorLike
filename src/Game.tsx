@@ -101,7 +101,7 @@ function Game() {
     let animationFrameId: number;
     let localLife = life;
     let localLevel = level;
-    let localScore = score;
+    const localScore = score;
 
     const gameLogic = (delta: number) => {
       const enemies = getEnemies();

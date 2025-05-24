@@ -1,6 +1,7 @@
-import { Link, NavLink } from "react-router";
+import { ReactNode } from "react";
+import { NavLink } from "react-router";
 
-export function Header({ children }: { children: any }) {
+export function Header({ children }: { children: ReactNode }) {
   return (
     <>
       <div>
