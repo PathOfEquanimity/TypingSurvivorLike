@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect, useRef, ChangeEvent } from "react";
 import {
   EnemyObject,
@@ -5,13 +6,13 @@ import {
   Pos,
   findDistance,
   focusEnemy,
-} from "./Enemy.tsx";
-import { PLAYER_POS } from "./constants.tsx";
-import { GameMap } from "./GameMap.tsx";
-import LifeBar from "./LifeBar.tsx";
-import { useEnemyStore } from "./state.tsx";
-import { LeaderboardEntry } from "./LeaderBoard.tsx";
+} from "@/utils/enemy";
+import { PLAYER_POS } from "@/utils/constants";
+import { GameMap } from "@/components/GameMap";
+import LifeBar from "@/components/LifeBar";
+import { useEnemyStore } from "@/utils/state";
 import { useCookies } from "react-cookie";
+import { LeaderboardEntry } from "@/utils/leaderboard";
 
 const MOVEMENT_THRESHOLD = 1;
 const MAX_LIFE = 3;
@@ -220,4 +221,4 @@ function Game() {
   );
 }
 
-export { Game };
+export default Game;

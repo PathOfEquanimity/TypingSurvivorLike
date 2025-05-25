@@ -1,5 +1,5 @@
-import { GRID_Y_LENGTH, GRID_X_LENGTH, PLAYER_POS } from "./constants.tsx";
-import { words } from "./words1k.json";
+import { GRID_Y_LENGTH, GRID_X_LENGTH, PLAYER_POS } from "@/utils/constants.ts";
+import { words } from "@/assets/words1k.json";
 
 export const constructEnemies = (n: number, donutThreshold: number) => {
   const scrambled = words.sort(() => Math.random() - 0.5);
@@ -88,8 +88,4 @@ const focusEnemy = (enemies: EnemyObject[]) => {
   return enemies;
 };
 
-function Enemy() {
-  return <p>Hello world</p>;
-}
-
-export { Enemy, type EnemyObject, type Pos, Status, findDistance, focusEnemy };
+export { type EnemyObject, type Pos, Status, findDistance, focusEnemy };

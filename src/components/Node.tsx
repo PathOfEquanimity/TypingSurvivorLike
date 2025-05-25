@@ -1,5 +1,5 @@
+import { Status } from "@/utils/enemy";
 import { useEffect, useState } from "react";
-import { Status } from "./Enemy";
 
 const findLetterSize = (word_length: number) => {
   const padding = 0;

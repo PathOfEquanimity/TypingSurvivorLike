@@ -1,21 +1,25 @@
+"use client";
 //NOTE:
 // Leaderboard is basically a todo app
 // But without editing capabilities, which means there's zero reactivity
 //
+import { useEffect } from "react";
 import { useCookies } from "react-cookie";
+import { LeaderboardEntry } from "@/utils/leaderboard";
 
-export interface LeaderboardEntry {
-  key: string;
-  name: string;
-  score: number;
-}
-
-export function LeaderBoard() {
+export default function LeaderBoard() {
   const [cookies] = useCookies<
     "leaderboard",
     { leaderboard: LeaderboardEntry[] }
   >(["leaderboard"]);
   const leaderboard = cookies.leaderboard ?? [];
+  useEffect(() => {
+    (async () => {
+      const res = await fetch("/api/leaderboard");
+      const data = await res.json();
+      console.log(data);
+    })();
+  });
   return (
     <div className="page">
       <ul className="leaderboard">
