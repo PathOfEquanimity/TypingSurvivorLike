@@ -105,10 +105,6 @@ function Game() {
       // handle life
       if (localLife <= 0) {
         // TODO: add a popup to enter the name and save it cookies
-        setCookie("leaderboard", [
-          ...(cookies.leaderboard ?? []),
-          { key: crypto.randomUUID(), name: "V", score: localScore },
-        ]);
         writeScore("V", localScore).finally(() => location.reload());
         return;
       }
