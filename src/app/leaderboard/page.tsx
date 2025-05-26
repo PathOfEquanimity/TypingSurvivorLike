@@ -13,13 +13,14 @@ export default function LeaderBoard() {
     { leaderboard: LeaderboardEntry[] }
   >(["leaderboard"]);
   const leaderboard = cookies.leaderboard ?? [];
+  // TODO: fetch information from backend
   useEffect(() => {
     (async () => {
       const res = await fetch("/api/leaderboard");
       const data = await res.json();
       console.log(data);
     })();
-  });
+  }, []);
   return (
     <div className="page">
       <ul className="leaderboard">

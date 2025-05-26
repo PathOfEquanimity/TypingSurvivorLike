@@ -1,8 +1,8 @@
 "use client";
-import { Header } from "@/components/Header";
 import { CookiesProvider } from "react-cookie";
 import "@/styles/App.css";
 import "@/styles/globals.css";
+import { Header } from "@/components/Header";
 
 export default function RootLayout({
   children,
