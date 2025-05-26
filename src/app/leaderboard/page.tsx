@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { LeaderboardEntry } from "@/utils/leaderboard";
 import { fetchAllScores } from "app/action";
 import Loading from "@/components/Loading";
-import Error from "@/components/Error";
+import CustomError from "@/components/CustomError";
 
 export default function LeaderBoard() {
   const [loading, setLoading] = useState(true);
@@ -34,7 +34,7 @@ export default function LeaderBoard() {
     return <Loading />;
   }
   if (error != null) {
-    return <Error message={"Couldn't fetch leaderboard data"} />;
+    return <CustomError message={"Couldn't fetch leaderboard data"} />;
   }
   return (
     <div className="page">

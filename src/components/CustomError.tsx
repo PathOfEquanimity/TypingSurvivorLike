@@ -1,4 +1,4 @@
-export default function Error({ message }: { message: string }) {
+export default function CustomError({ message }: { message: string }) {
   return (
     <div className="flex items-center justify-center h-screen text-center">
       <div>
