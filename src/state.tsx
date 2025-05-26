@@ -1,4 +1,4 @@
-import { EnemyObject, constructEnemies } from "@/utils/enemy";
+import { EnemyObject, constructEnemies } from "./Enemy";
 import { create } from "zustand";
 
 interface TypedWord {

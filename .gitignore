@@ -10,8 +10,6 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
-.next
-next-env.d.ts
 *.local
 
 # Editor directories and files
@@ -24,4 +22,3 @@ next-env.d.ts
 *.njsproj
 *.sln
 *.sw?
-.vercel

@@ -1,4 +1,3 @@
-"use client";
 import { useState, useEffect, useRef, ChangeEvent } from "react";
 import {
   EnemyObject,
@@ -6,14 +5,13 @@ import {
   Pos,
   findDistance,
   focusEnemy,
-} from "@/utils/enemy";
-import { PLAYER_POS } from "@/utils/constants";
-import { GameMap } from "@/components/GameMap";
-import LifeBar from "@/components/LifeBar";
-import { useEnemyStore } from "@/utils/state";
+} from "./Enemy.tsx";
+import { PLAYER_POS } from "./constants.tsx";
+import { GameMap } from "./GameMap.tsx";
+import LifeBar from "./LifeBar.tsx";
+import { useEnemyStore } from "./state.tsx";
+import { LeaderboardEntry } from "./LeaderBoard.tsx";
 import { useCookies } from "react-cookie";
-import { LeaderboardEntry } from "@/utils/leaderboard";
-import { useRouter } from "next/navigation";
 
 const MOVEMENT_THRESHOLD = 1;
 const MAX_LIFE = 3;
@@ -67,7 +65,6 @@ function Game() {
     "leaderboard",
     { leaderboard: LeaderboardEntry[] }
   >(["leaderboard"]);
-  const router = useRouter()
 
   const onWordTyped = (e: ChangeEvent<HTMLInputElement>) => {
     setTypedWord(e.target.value);
@@ -87,7 +84,6 @@ function Game() {
         setScore(score + enemy.word.length);
         setTypedWord("");
       }
-
       return enemy;
     });
     setEnemies(focusEnemy(new_enemies));
@@ -116,7 +112,7 @@ function Game() {
           ...(cookies.leaderboard ?? []),
           { key: crypto.randomUUID(), name: "V", score: localScore },
         ]);
-        router.refresh();
+        location.reload();
         return;
       }
       let newLife = localLife;
@@ -224,4 +220,4 @@ function Game() {
   );
 }
 
-export default Game;
+export { Game };
