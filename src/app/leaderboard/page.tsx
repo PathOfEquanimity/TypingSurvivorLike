@@ -3,28 +3,27 @@
 // Leaderboard is basically a todo app
 // But without editing capabilities, which means there's zero reactivity
 //
-import { useEffect } from "react";
-import { useCookies } from "react-cookie";
+import { useEffect, useState } from "react";
 import { LeaderboardEntry } from "@/utils/leaderboard";
+import { fetchAllScores } from "app/action";
 
 export default function LeaderBoard() {
-  const [cookies] = useCookies<
-    "leaderboard",
-    { leaderboard: LeaderboardEntry[] }
-  >(["leaderboard"]);
-  const leaderboard = cookies.leaderboard ?? [];
+  const [leaderboardRows, setLeaderboardRows] = useState<LeaderboardEntry[]>(
+    [],
+  );
   // TODO: fetch information from backend
   useEffect(() => {
     (async () => {
-      const res = await fetch("/api/leaderboard");
-      const data = await res.json();
-      console.log(data);
+      const res = await fetchAllScores();
+      setLeaderboardRows(
+        res.map((e) => ({ key: e.id, name: e.username, score: e.score })),
+      );
     })();
   }, []);
   return (
     <div className="page">
       <ul className="leaderboard">
-        {leaderboard
+        {leaderboardRows
           .sort(
             (entry1: LeaderboardEntry, entry2: LeaderboardEntry) =>
               entry2.score - entry1.score,
