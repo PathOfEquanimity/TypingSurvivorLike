@@ -24,12 +24,11 @@
       "@/components/*": ["components/*"],
       "@/styles/*": ["styles/*"],
       "@/utils/*": ["utils/*"],
-      "@/assets/*": ["assets/*"]
+      "@/assets/*": ["assets/*"],
+      "@/types/*": ["types/*"]
     },
     "plugins": [{ "name": "next" }]
   },
   "include": ["./src", "./dist/types/**/*.ts", "./next-env.d.ts"],
   "exclude": ["./node_modules"]
 }
-
-

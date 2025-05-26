@@ -3,28 +3,43 @@
 // Leaderboard is basically a todo app
 // But without editing capabilities, which means there's zero reactivity
 //
-import { useEffect } from "react";
-import { useCookies } from "react-cookie";
+import { useEffect, useState } from "react";
 import { LeaderboardEntry } from "@/utils/leaderboard";
+import { fetchAllScores } from "app/action";
+import Loading from "@/components/Loading";
+import CustomError from "@/components/CustomError";
 
 export default function LeaderBoard() {
-  const [cookies] = useCookies<
-    "leaderboard",
-    { leaderboard: LeaderboardEntry[] }
-  >(["leaderboard"]);
-  const leaderboard = cookies.leaderboard ?? [];
-  // TODO: fetch information from backend
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [leaderboardRows, setLeaderboardRows] = useState<LeaderboardEntry[]>(
+    [],
+  );
   useEffect(() => {
     (async () => {
-      const res = await fetch("/api/leaderboard");
-      const data = await res.json();
-      console.log(data);
+      setError(null);
+      try {
+        const res = await fetchAllScores();
+        setLeaderboardRows(
+          res.map((e) => ({ key: e.id, name: e.username, score: e.score })),
+        );
+      } catch {
+        setError("Failed to load leaderboard");
+      } finally {
+        setLoading(false);
+      }
     })();
   }, []);
+  if (loading == true) {
+    return <Loading />;
+  }
+  if (error != null) {
+    return <CustomError message={"Couldn't fetch leaderboard data"} />;
+  }
   return (
     <div className="page">
       <ul className="leaderboard">
-        {leaderboard
+        {leaderboardRows
           .sort(
             (entry1: LeaderboardEntry, entry2: LeaderboardEntry) =>
               entry2.score - entry1.score,

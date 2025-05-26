@@ -11,9 +11,7 @@ import { PLAYER_POS } from "@/utils/constants";
 import { GameMap } from "@/components/GameMap";
 import LifeBar from "@/components/LifeBar";
 import { useEnemyStore } from "@/utils/state";
-import { useCookies } from "react-cookie";
-import { LeaderboardEntry } from "@/utils/leaderboard";
-import { useRouter } from "next/navigation";
+import { writeScore } from "app/action";
 
 const MOVEMENT_THRESHOLD = 1;
 const MAX_LIFE = 3;
@@ -63,11 +61,6 @@ function Game() {
   const [typedWord, setTypedWord] = useState("");
   const { createEnemies, getEnemies, setEnemies } = useEnemyStore();
   const [level, setLevel] = useState(1);
-  const [cookies, setCookie] = useCookies<
-    "leaderboard",
-    { leaderboard: LeaderboardEntry[] }
-  >(["leaderboard"]);
-  const router = useRouter()
 
   const onWordTyped = (e: ChangeEvent<HTMLInputElement>) => {
     setTypedWord(e.target.value);
@@ -112,11 +105,7 @@ function Game() {
       // handle life
       if (localLife <= 0) {
         // TODO: add a popup to enter the name and save it cookies
-        setCookie("leaderboard", [
-          ...(cookies.leaderboard ?? []),
-          { key: crypto.randomUUID(), name: "V", score: localScore },
-        ]);
-        router.refresh();
+        writeScore("V", localScore).finally(() => location.reload());
         return;
       }
       let newLife = localLife;
