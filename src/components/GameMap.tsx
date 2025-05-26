@@ -1,7 +1,7 @@
-import { EnemyObject, Status } from "./Enemy.tsx";
-import { Node } from "./Node.tsx";
-import { GRID_Y_LENGTH, GRID_X_LENGTH, PLAYER_POS } from "./constants.tsx";
-import { useEnemyStore } from "./state.tsx";
+import { GRID_Y_LENGTH, GRID_X_LENGTH, PLAYER_POS } from "@/utils/constants";
+import { Status, EnemyObject } from "@/utils/enemy";
+import { useEnemyStore } from "@/utils/state";
+import { Node } from "@/components/Node";
 
 function GameMap() {
   const { getEnemies } = useEnemyStore(); // eslint-disable-line react-hooks/rules-of-hooks
@@ -44,7 +44,7 @@ function GameMap() {
 
   // NOTE: displays grid
   return (
-    <div className="grid grid-cols-20">
+    <div className="grid-cols-20">
       {grid.map((row, rowId) => {
         return (
           <div key={rowId} className="row">

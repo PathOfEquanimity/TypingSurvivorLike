@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { NavLink } from "react-router";
+import Link from "next/link";
 
 export function Header({ children }: { children: ReactNode }) {
   return (
@@ -7,10 +7,10 @@ export function Header({ children }: { children: ReactNode }) {
       <div>
         <ul className="nav-links">
           <li>
-            <NavLink to="/">Game</NavLink>
+            <Link href="/game">Game</Link>
           </li>
           <li>
-            <NavLink to="/leaderboard">Leaderboard</NavLink>
+            <Link href="/leaderboard">Leaderboard</Link>
           </li>
         </ul>
       </div>
